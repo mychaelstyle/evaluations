@@ -1,0 +1,336 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-10 19:38+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+#: competency/management/commands/import_icd.py:13
+msgid "インポートするExcelのタイプをtask|skill|relationで指定してください。"
+msgstr ""
+
+#: competency/management/commands/import_icd.py:14
+msgid "インポートするファイルパスを入力してください。"
+msgstr ""
+
+#: competency/management/commands/import_icd.py:21
+msgid "指定されたパスにファイルが存在しません"
+msgstr ""
+
+#: competency/management/commands/import_icd.py:23
+msgid "Excel形式のファイルを指定してください"
+msgstr ""
+
+#: competency/management/commands/import_icd.py:33
+msgid ""
+"タイプオプション(--type)はtask|skill|relationのいずれかで指定してください。"
+msgstr ""
+
+#: competency/models.py:14 target/models.py:80
+msgid "created_at"
+msgstr "作成日時"
+
+#: competency/models.py:15 target/models.py:81
+msgid "updated_at"
+msgstr "更新日時"
+
+#: competency/models.py:29
+msgid "task.title"
+msgstr "タスク名"
+
+#: competency/models.py:42 competency/models.py:80 competency/models.py:115
+msgid "competency"
+msgstr "コンピテンシー"
+
+#: competency/models.py:44
+msgid "task_parent"
+msgstr "親タスク"
+
+#: competency/models.py:46 competency/models.py:65 competency/models.py:84
+#: competency/models.py:119 competency/models.py:138
+msgid "node_level"
+msgstr "ノードレベル"
+
+#: competency/models.py:47 competency/models.py:66 competency/models.py:85
+#: competency/models.py:120 competency/models.py:139
+msgid "is_leaf"
+msgstr "リーフフラグ"
+
+#: competency/models.py:48
+msgid "task_code"
+msgstr "タスクコード"
+
+#: competency/models.py:49
+msgid "task_name"
+msgstr "タスク名"
+
+#: competency/models.py:61 competency/models.py:99 competency/models.py:101
+#: competency/models.py:152 competency/models.py:167
+msgid "task_evaluation"
+msgstr "タスク"
+
+#: competency/models.py:63
+msgid "task_item_parent"
+msgstr "親タスク項目"
+
+#: competency/models.py:67 competency/models.py:86
+msgid "task_item_code"
+msgstr "タスク項目コード"
+
+#: competency/models.py:68 competency/models.py:87 competency/models.py:88
+msgid "task_item_name"
+msgstr "タスク項目名"
+
+#: competency/models.py:82
+msgid "task_profile_parent"
+msgstr "親タスクプロフィール"
+
+#: competency/models.py:103
+msgid "task_profile_relation_weight"
+msgstr "タスクプロフィール関係比重"
+
+#: competency/models.py:117
+msgid "skill_parent"
+msgstr "親スキル"
+
+#: competency/models.py:121
+msgid "skill_code"
+msgstr "スキルコード"
+
+#: competency/models.py:122
+msgid "skill_name"
+msgstr "スキル名"
+
+#: competency/models.py:134 competency/models.py:154
+msgid "skill_evaluation"
+msgstr "スキル"
+
+#: competency/models.py:136
+msgid "skill_knowledge_parent"
+msgstr "親スキル知識"
+
+#: competency/models.py:140
+msgid "skill_knowledge_code"
+msgstr "スキル知識コード"
+
+#: competency/models.py:141
+msgid "skill_knowledge_name"
+msgstr "スキル知識名"
+
+#: competency/models.py:177
+msgid "task_search_word"
+msgstr "タスク検索ワード"
+
+#: competency/models.py:178
+msgid "searched_count"
+msgstr "検索回数"
+
+#: evaluations/settings.py:139
+msgid "English"
+msgstr "英語"
+
+#: evaluations/settings.py:140
+msgid "Japanese"
+msgstr "日本語"
+
+#: target/models.py:9
+msgid "students"
+msgstr "学生"
+
+#: target/models.py:10
+msgid "new_graduates"
+msgstr "社会人3年以内"
+
+#: target/models.py:11
+msgid "juniors"
+msgstr "ジュニアレベル"
+
+#: target/models.py:12
+msgid "regular_members"
+msgstr "レギュラーメンバーレベル"
+
+#: target/models.py:13
+msgid "team_leaders"
+msgstr "課長・チームリーダーレベル"
+
+#: target/models.py:14
+msgid "managers"
+msgstr "部長・次長・マネージャーレベル"
+
+#: target/models.py:15
+msgid "heads_of_section"
+msgstr "支部長・支社長レベル"
+
+#: target/models.py:16
+msgid "board_members"
+msgstr "役員レベル"
+
+#: target/models.py:61
+msgid "others"
+msgstr "その他"
+
+#: target/models.py:65
+msgid "on_the_job"
+msgstr "職務で実施"
+
+#: target/models.py:66
+msgid "read_a_book"
+msgstr "本を読む"
+
+#: target/models.py:67
+msgid "take_a_seminar"
+msgstr "セミナーを受ける"
+
+#: target/models.py:68
+msgid "make_anything"
+msgstr "何か成果物を作る"
+
+#: target/models.py:69
+msgid "presentation"
+msgstr "プレゼンする"
+
+#: target/models.py:91 target/models.py:142
+msgid "UUID"
+msgstr "UUID"
+
+#: target/models.py:92 target/models.py:143
+msgid "passcode"
+msgstr "パスコード"
+
+#: target/models.py:93
+msgid "viewcode"
+msgstr "表示コード"
+
+#: target/models.py:94
+msgid "is_open"
+msgstr "公開"
+
+#: target/models.py:95
+msgid "target_viewname"
+msgstr "目標設定名"
+
+#: target/models.py:96 target/models.py:144
+msgid "first_name"
+msgstr "名"
+
+#: target/models.py:97 target/models.py:145
+msgid "last_name"
+msgstr "姓"
+
+#: target/models.py:98
+msgid "target_date"
+msgstr "目標期限日"
+
+#: target/models.py:99 target/models.py:146
+msgid "grade"
+msgstr "グレード"
+
+#: target/models.py:100 target/models.py:102 target/models.py:147
+#: target/models.py:149
+msgid "organization_name"
+msgstr "組織名"
+
+#: target/models.py:101 target/models.py:148
+msgid "industry_optional"
+msgstr "業界・業種その他"
+
+#: target/models.py:103 target/models.py:150
+msgid "organization_url"
+msgstr "組織URL"
+
+#: target/models.py:104 target/models.py:151
+msgid "department_name"
+msgstr "部門・部署名"
+
+#: target/models.py:105 target/models.py:106 target/models.py:107
+#: target/models.py:152 target/models.py:153 target/models.py:154
+msgid "role"
+msgstr "役割"
+
+#: target/models.py:108 target/models.py:132
+msgid "description"
+msgstr "概要"
+
+#: target/models.py:116
+msgid "target"
+msgstr "目標"
+
+#: target/models.py:118
+msgid "task_evaluation_item"
+msgstr "タスク評価項目"
+
+#: target/models.py:120
+msgid "self_evaluation"
+msgstr "自己評価"
+
+#: target/models.py:128 target/models.py:165
+msgid "target_item"
+msgstr "目標項目"
+
+#: target/models.py:130
+msgid "user_viewname"
+msgstr "表示名"
+
+#: target/models.py:131
+msgid "action_type"
+msgstr "行動タイプ"
+
+#: target/models.py:133
+msgid "url"
+msgstr "URL"
+
+#: target/models.py:134
+msgid "progress"
+msgstr "進捗"
+
+#: target/models.py:155
+msgid "feedback_notes"
+msgstr "フィードバック"
+
+#: target/models.py:163
+msgid "evaluation"
+msgstr "評価"
+
+#: target/models.py:167
+msgid "evaluation_value"
+msgstr "評価値"
+
+#: target/models.py:168
+msgid "self_evaluation_value"
+msgstr "自己評価値"
+
+#: target/views/api.py:33
+msgid "no_selected_items"
+msgstr "項目が選択されていません"
+
+#: target/views/api.py:37
+msgid "select_more_than_3_items"
+msgstr "項目は３つ以上選択してください"
+
+#: target/views/api.py:39
+msgid "select_less_than_10_items"
+msgstr "項目は10つまで設定できます"
+
+#: target/views/api.py:44
+msgid "invalid_selected_items"
+msgstr "選択された項目のいずれかが正しくありません"
+
+#: target/views/api.py:48
+msgid "validation_error"
+msgstr "入力内容を確認してください"
+
+#: templates/simple.html:10 templates/simple.html:31 templates/target.html:11
+msgid "site_title"
+msgstr "評価・目標設定ビルダー"

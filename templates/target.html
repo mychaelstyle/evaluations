@@ -1,0 +1,184 @@
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>{% trans 'site_title' %}</title>
+
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'admin-lte/dist/css/adminlte.min.css' %}">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  
+</head>
+<body class="hold-transition fixed layout-top-nav">
+<div class="wrapper">
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="card card-widget widget-user">
+                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                    <div class="widget-user-header text-white" style="background: url('{% static 'admin-lte/dist/img/photo1.png' %}') center center;">
+                    <h3 class="widget-user-username text-right">{{target.viewname}}</h3>
+                    <h5 class="widget-user-desc text-right">{{target.job}} {{target.last_name}} {{target.first_name}}</h5>
+                    </div>
+                    <div class="widget-user-image">
+                    <img class="img-circle" src="{% static 'admin-lte/dist/img/prod-3.jpg' %}" alt="User Avatar">
+                    </div>
+                    <div class="card-footer">
+                    <div class="row">
+                        <div class="col-sm-3 border-right">
+                        <div class="description-block">
+                            <h5 class="description-header">業界・業種</h5>
+                            <span class="description-text">{{target.get_industory_display}}<br>{{target.industory_opt}}</span>
+                        </div>
+                        <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-3 border-right">
+                        <div class="description-block">
+                            <h5 class="description-header">肩書き</h5>
+                            <span class="description-text">{{target.position}}</span>
+                        </div>
+                        <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-3 border-right">
+                            <div class="description-block">
+                            <h5 class="description-header">概要</h5>
+                            <span class="description-text">{{target.description}}</span>
+                            </div>
+                            <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-3">
+                        <div class="description-block">
+                            <h5 class="description-header">目標作成日</h5>
+                            <span class="description-text">{{target.created_at}}</span>
+                        </div>
+                        <!-- /.description-block -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                {% for key, task in tasks.items %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-outline card-success">
+                            <div class="card-header">
+                                <h3 class="card-title">{{task.task.parent.parent.name}} -> {{task.task.parent.name}} -> {{task.task.name}}</h3>
+                                <div class="card-tools">
+                                    <button class="float-right btn btn-success btn-sm" type="button" data-toggle="collapse"
+                                    data-target="#related-skills-{{task.task.id}}" aria-expanded="false"
+                                    aria-controls="related-skills-{{task.task.id}}">関連スキル・知識を見る</button>
+                                </div>
+                                <!-- /.card-tools -->
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-footer">
+                                <ul class="nav flex-column">
+                                    {% for item in task.items %}
+                                    <li class="nav-item">
+                                        <form name="self-evaluation-form-{{item.id}}" id="self-evaluation-form-{{item.id}}" action="" method="post">
+                                            <span class="nav-link">{{item.name}}
+                                                <div class="form-group float-right">
+                                                    <!--
+                                                    <select name="self_evaluation" class="form-group">
+                                                        <option value="">初期の自己評価</option>
+                                                        <option value="0">未経験・知識なし</option>
+                                                        <option value="25">トレーニングを受けた程度の知識あり</option>
+                                                        <option value="50">サポートがあれば実施できる</option>
+                                                        <option value="75">独力で実施できる、または実施経験あり</option>
+                                                        <option value="100">他者を指導できる、または指導経験あり</option>
+                                                    </select>
+                                                    -->
+                                                </div>
+                                            </span>
+                                        </form>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <!-- /.card-footer -->
+                            <div class="card-body">
+                                {% for profile in task.profiles %}
+                                <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                    title="{{profile.description}}">{{profile.name}}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="card-body collapse" id="related-skills-{{task.task.id}}">
+                                {% for skill in task.skills %}
+                                <br>
+                                <span class="badge badge-success" data-toggle="tooltip" data-placement="top"
+                                    title="{{skill.description}}">{{skill.name}}</span>
+                                    {% for knowledge in skill.knowledges.all %}
+                                    <span class="badge badge-primary" data-toggle="tooltip" data-placement="top"
+                                    title="{{knowledge.description}}">{{knowledge.name}}</span>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- /.Main content -->
+
+    </div>
+    <!-- /. content-wrapper -->
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+        <!-- To the right -->
+        <div class="float-right d-none d-sm-inline">
+        </div>
+        <!-- Default to the left -->
+        <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    </footer>
+
+</div>
+<!-- /. wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'admin-lte/plugins/select2/js/select2.full.min.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'admin-lte/plugins/moment/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'admin-lte/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
+<!-- Bootstrap Switch -->
+<script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
+</body>
+</html>

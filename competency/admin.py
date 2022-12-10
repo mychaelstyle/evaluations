@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Competency, TaskEvaluation, TaskEvaluationItem, SkillEvaluation, SkillEvaluationKnowledge, TaskSkill, TaskProfile, TaskEvaluationTaskProfile, TaskFulltext
+from .models import Competency, TaskEvaluation, TaskEvaluationItem, SkillEvaluation, SkillEvaluationKnowledge, TaskSkill, TaskProfile, TaskEvaluationTaskProfile, TaskFulltext, TaskSearchWords
 
 # Register your models here.
 class CompetencyAdmin(admin.ModelAdmin):
@@ -45,3 +45,11 @@ admin.site.register(TaskSkill,TaskSkillAdmin)
 class TaskFulltextAdmin(admin.ModelAdmin):
     list_display = ('task_evaluation','contents')
     ordering = ('-updated_at',)
+admin.site.register(TaskFulltext,TaskFulltextAdmin)
+
+class TaskSearchWordsAdmin(admin.ModelAdmin):
+    list_display = ('word','searched_count')
+    ordering = ('-searched_count',)
+admin.site.register(TaskSearchWords,TaskSearchWordsAdmin)
+
+

@@ -5,26 +5,69 @@ from django.forms.models import model_to_dict
 from django.db.models import Q
 from django.db.models import Prefetch
 from django.db.models import Subquery, OuterRef
+from django.core.paginator import Paginator
 import inspect
 
 from utilities import CommonJsonResponse
-from ..models import TaskEvaluation, TaskEvaluationItem, TaskSkill, TaskFulltext
+from ..models import TaskEvaluation, TaskEvaluationItem, TaskSkill, TaskFulltext, TaskSearchWords
+from ..services import register_searchword
 
 def search(request):
     res = CommonJsonResponse(request)
     competency_id = request.GET.get("competency",1)
+    # input
+    node_level = request.GET.get("node_level",None)
     query = request.GET.get("q",None)
     per_page = request.GET.get("perpage",100)
     page = request.GET.get("page",1)
-    queryset = TaskEvaluation.objects.filter(competency_id=competency_id, is_leaf=True).alive()
+    page = int(page)
+    # main query
+    queryset = TaskEvaluation.objects.filter(competency_id=competency_id)
+    if node_level is None:
+        queryset = queryset.filter(is_leaf=True)
+    elif type(node_level) is int:
+        queryset = queryset.filter(node_level=node_level)
+    elif node_level.isdecimal():
+        queryset = queryset.filter(node_level=int(node_level))
+    queryset = queryset.prefetch_related('items','profiles').alive()
+    # subquery - これは重いからiCD以外を入れるなら要検討
     queryset_txt = TaskFulltext.objects.alive()
     if query is not None:
         query = query.replace("　"," ")
+        query = query.strip()
         queries = query.split(" ")
+        register_searchword(query)
         for q in queries:
-            queryset_txt = queryset_txt.filter(contents__icontains=q)
+            queryset_txt = queryset_txt.filter(contents__icontains=q.lower())
+            register_searchword(q)
     queryset = queryset.filter(pk__in=Subquery(queryset_txt.values('task_evaluation'))).all()
-    res.set_data(queryset,perpage=per_page,page=page)
+
+    pagenator = Paginator(queryset,per_page)
+    if page > pagenator.num_pages:
+        page = pagenator.num_pages
+    page_obj = pagenator.get_page(page)
+    res.pageinfo = {
+        "per_page" : per_page,
+        "count" : pagenator.count,
+        "num_pages" : pagenator.num_pages,
+        "page" : page
+    }
+    data = []
+    for row in page_obj:
+        items = []
+        for item in row.items.all():
+            ditem = res.model_to_dict(item)
+            items.append(ditem)
+        profiles = []
+        for profile in row.profiles.all():
+           dprofile = res.model_to_dict(profile.task_profile)
+           profiles.append(dprofile)
+        rd = res.model_to_dict(row)
+        rd['items'] = items
+        rd['profiles'] = profiles
+        data.append(rd)
+
+    res.set_data(data,perpage=per_page,page=page)
 
     """
     result = TaskEvaluationItem.objects.select_related(

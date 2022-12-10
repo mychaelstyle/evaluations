@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 from django.middleware.csrf import get_token
 from django.db.models import QuerySet, Model
+from django.db.models.fields.related_descriptors import create_reverse_many_to_one_manager
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -15,14 +16,13 @@ class CommonJsonResponse:
     """
     RESPONSE_RESULT_OK = "OK"
     RESPONSE_RESULT_NG = "NG"
-    request = None
-    body = {}
-    data = {}
-    pageinfo = None
-    messages = []
-    field_errors = {}
     def __init__(self, request, *args, **kwargs):
         self.request = request
+        self.body = {}
+        self.data = {}
+        self.pageinfo = None
+        self.messages = []
+        self.field_errors = {}
 
     def add_message(self,msg):
         """レスポンスのmessagesにメッセージを追加する
@@ -95,6 +95,11 @@ class CommonJsonResponse:
                 ret[m[0]] = self.model_to_dict(m[1])
         return ret
 
+    def is_error(self):
+        if len(self.messages) > 0 or len(self.field_errors) > 0:
+            return True
+        return False
+        
     def get(self):
         """JSONResponseを作成して取得する
 
@@ -105,6 +110,7 @@ class CommonJsonResponse:
         self.body['field_errors'] = self.field_errors
         if len(self.messages) > 0 or len(self.field_errors) > 0:
             self.body['result'] = self.RESPONSE_RESULT_NG
+            self.body['csrf_token'] = get_token(self.request)
         else:
             self.body['result'] = self.RESPONSE_RESULT_OK
             self.body['data'] = self.data

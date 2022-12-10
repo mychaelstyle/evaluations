@@ -40,8 +40,9 @@ class TaskEvaluation(BaseModel):
         BaseModel (_type_): _description_
     """
     competency = models.ForeignKey(Competency,verbose_name=_("competency"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_evaluation_competency")
-    parent = models.ForeignKey("self",verbose_name=_("task_parent"),null=True,db_index=True,blank=True,on_delete=models.CASCADE)
+                            on_delete=models.CASCADE,null=False,blank=False,related_name="tasks")
+    parent = models.ForeignKey("self",verbose_name=_("task_parent"),null=True,
+                            db_index=True,blank=True,on_delete=models.CASCADE,related_name="children")
     node_level = models.PositiveSmallIntegerField(verbose_name=_("node_level"),null=False,blank=False,default=0)
     is_leaf = models.BooleanField(verbose_name=_('is_leaf'),null=False,blank=False,default=False)
     code = models.CharField(verbose_name=_("task_code"),max_length=50)
@@ -58,8 +59,9 @@ class TaskEvaluationItem(BaseModel):
         BaseModel (_type_): _description_
     """
     task_evaluation = models.ForeignKey(TaskEvaluation,verbose_name=_("task_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_evaluation_item_task_evaluation")
-    parent = models.ForeignKey("self",verbose_name=_("task_item_parent"),null=True,db_index=True,blank=True,on_delete=models.CASCADE)
+                            on_delete=models.CASCADE,null=False,blank=False,related_name="items")
+    parent = models.ForeignKey("self",verbose_name=_("task_item_parent"),null=True,
+                            db_index=True,blank=True,on_delete=models.CASCADE,related_name="children")
     node_level = models.PositiveSmallIntegerField(verbose_name=_("node_level"),null=False,blank=False,default=0)
     is_leaf = models.BooleanField(verbose_name=_('is_leaf'),null=False,blank=False,default=False)
     code = models.CharField(verbose_name=_("task_item_code"),max_length=50)
@@ -76,8 +78,9 @@ class TaskProfile(BaseModel):
         BaseModel (_type_): _description_
     """
     competency = models.ForeignKey(Competency,verbose_name=_("competency"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_profile_competency")
-    parent = models.ForeignKey("self",verbose_name=_("task_profile_parent"),null=True,db_index=True,blank=True,on_delete=models.CASCADE)
+                            on_delete=models.CASCADE,null=False,blank=False,related_name="profiles")
+    parent = models.ForeignKey("self",verbose_name=_("task_profile_parent"),
+                            null=True,db_index=True,blank=True,on_delete=models.CASCADE,related_name="children")
     node_level = models.PositiveSmallIntegerField(verbose_name=_("node_level"),null=False,blank=False,default=0)
     is_leaf = models.BooleanField(verbose_name=_('is_leaf'),null=False,blank=False,default=False)
     code = models.CharField(verbose_name=_("task_item_code"),max_length=50)
@@ -94,9 +97,9 @@ class TaskEvaluationTaskProfile(BaseModel):
         BaseModel (_type_): _description_
     """
     task_evaluation = models.ForeignKey(TaskEvaluation,verbose_name=_("task_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_evaluation_profile_task_evaluation")
+        on_delete=models.CASCADE,null=False,blank=False,related_name="profiles")
     task_profile = models.ForeignKey(TaskProfile,verbose_name=_("task_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_evaluation_profile_task_profile")
+        on_delete=models.CASCADE,null=False,blank=False,related_name="tasks")
     weight = models.PositiveSmallIntegerField(verbose_name=_("task_profile_relation_weight"),null=False,blank=False,default=0)
 
 #
@@ -110,8 +113,9 @@ class SkillEvaluation(BaseModel):
         BaseModel (_type_): _description_
     """
     competency = models.ForeignKey(Competency,verbose_name=_("competency"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="skill_evaluation_competency")
-    parent = models.ForeignKey("self",verbose_name=_("skill_parent"),null=True,db_index=True,blank=True,on_delete=models.CASCADE)
+                                on_delete=models.CASCADE,null=False,blank=False,related_name="skills")
+    parent = models.ForeignKey("self",verbose_name=_("skill_parent"),null=True,db_index=True,blank=True,
+                               on_delete=models.CASCADE,related_name="children")
     node_level = models.PositiveSmallIntegerField(verbose_name=_("node_level"),null=False,blank=False,default=0)
     is_leaf = models.BooleanField(verbose_name=_('is_leaf'),null=False,blank=False,default=False)
     code = models.CharField(verbose_name=_("skill_code"),max_length=50)
@@ -128,8 +132,9 @@ class SkillEvaluationKnowledge(BaseModel):
         BaseModel (_type_): _description_
     """
     skill_evaluation = models.ForeignKey(SkillEvaluation,verbose_name=_("skill_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="skill_evaluation_knowledge_skill_evaluation")
-    parent = models.ForeignKey("self",verbose_name=_("skill_knowledge_parent"),null=True,db_index=True,blank=True,on_delete=models.CASCADE)
+                            on_delete=models.CASCADE,null=False,blank=False,related_name="knowledges")
+    parent = models.ForeignKey("self",verbose_name=_("skill_knowledge_parent"),
+                            null=True,db_index=True,blank=True,on_delete=models.CASCADE,related_name="children")
     node_level = models.PositiveSmallIntegerField(verbose_name=_("node_level"),null=False,blank=False,default=0)
     is_leaf = models.BooleanField(verbose_name=_('is_leaf'),null=False,blank=False,default=False)
     code = models.CharField(verbose_name=_("skill_knowledge_code"),max_length=50)
@@ -145,9 +150,9 @@ class TaskSkill(BaseModel):
         BaseModel (_type_): _description_
     """
     task_evaluation = models.ForeignKey(TaskEvaluation,verbose_name=_("task_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_skill_task_evaluation")
+        on_delete=models.CASCADE,null=False,blank=False,related_name="skills")
     skill_evaluation = models.ForeignKey(SkillEvaluation,verbose_name=_("skill_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_skill_skill_evaluation")
+        on_delete=models.CASCADE,null=False,blank=False,related_name="tasks")
 
 #
 # タスクフルテキスト検索用テーブル
@@ -160,5 +165,14 @@ class TaskFulltext(BaseModel):
         BaseModel (_type_): _description_
     """
     task_evaluation = models.ForeignKey(TaskEvaluation,verbose_name=_("task_evaluation"), 
-        on_delete=models.CASCADE,null=False,blank=False,related_name="task_fulltext_task_evaluation")
+        on_delete=models.CASCADE,null=False,blank=False,related_name="fulltext")
     contents = models.TextField(verbose_name="task_fulltext_contents",null=False,blank=False)
+
+class TaskSearchWords(BaseModel):
+    """検索された単語を記録するテーブル
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+    word = models.CharField(verbose_name=_("task_search_word"),max_length=255,db_index=True)
+    searched_count = models.PositiveIntegerField(verbose_name=_("searched_count"),null=False,blank=False,default=1,db_index=True)

@@ -1,0 +1,194 @@
+{% extends 'simple.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 pull-center mx-auto p-4">
+                    <h1 class="col-lg-12 pull-center mx-auto text-center">評価・目標設定サポート検索</h1>
+                </div>
+            </div>
+            <div class="row pull-center mx-auto">
+                <div class="col-2"></div>
+                <div class="col-8 small">
+                    <ul>
+                        <li>コンピテンシー、業務タスクを検索して、評価項目や必要なスキル・知識を探し、目標設定や評価項目の作成に役立ててください。</li>
+                        <li>現在<a href="https://www.ipa.go.jp/" target="_blank">IPA</a>が公開している
+                            「<a href="https://www.ipa.go.jp/jinzai/hrd/i_competency_dictionary/" target="_blank">iコンピテンシーディクショナリ</a>」に対応しています。
+                            他に利用したいコンピテンシーフレームワークやスキルフレームワークやおすすめがあればご一報ください。
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 pull-center">
+                    <!-- SEARCH FORM -->
+                    <form name="search-form" action="#" method="GET" class="form-inline" onsubmit="return false;">
+                        <div class="input-group input-group-lg col-lg-8 mx-auto">
+                            <input class="form-control form-control-lg" type="search" name="q" id="search-query" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn search-exec" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 pull-center mx-auto text-center p-3">
+                    <p>件数：<span id="total-count"></span>件</p>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row" id="search-results">
+            </div>
+        </div>
+    </div>
+    <!-- /.Main content -->
+
+{% endblock %}
+{% block scripts %}
+<script>
+var LAST_WORDS = "";
+var ALL_TASKS = {};
+var ALL_ITEMS = {}
+var PAGEINFO = {};
+var PAGE_LOADING = 0;
+var SELECTED = {};
+var get_page = function(page) {
+    url = '{% url 'api-tasks' %}';
+    $.ajax({
+        url : url,
+        type : "GET",
+        dataType : 'json',
+        data : {
+            q : LAST_WORDS,
+            perpage : 18,
+            page : page
+        }
+    }).done(function(data){
+        if('OK' != data['result']){
+            alert('error');
+            return;
+        }
+        PAGEINFO = data.pageinfo;
+        $('#total-count').text(data.pageinfo.count);
+        for(let num=0; num < data.data.length; ++num){
+            ALL_TASKS[data.data[num].code] = data.data[num];
+            var card = $('#template-card').clone();
+            idstr = 'card-' + data.data[num].id;
+            taskcode = data.data[num].code;
+            card.attr('id',idstr);
+            card.appendTo('#search-results');
+            card.show();
+            parent = data.data[num].parent;
+            root = data.data[num].parent.parent;
+            $('#'+idstr+' .task-tree').text(root.name + ' -> ' + parent.name);
+            $('#'+idstr+' .card-title').text(data.data[num].name);
+            for(let i=0; i<data.data[num].items.length; ++i){
+                item = data.data[num].items[i];
+                ALL_ITEMS[item.code] = item;
+                str = item.name.replace(LAST_WORDS,"<span class='text-danger'>"+LAST_WORDS+"</span>");
+                tr = "<tr><td class='small'>" + str
+                    + "</td><td class='small'><button class='btn btn-primary btn-sm text-nowrap btn-item-select' data-id='"
+                    + item.code + "' id='select-btn-" + item.id + "' task-code='" + taskcode + "'>追加</button></td></tr>";
+                li = '<li class="nav-item"><a href="#" class="nav-link">'+str+' <span class="float-right badge bg-primary">追加</span></a></li>';
+                $('#'+idstr+' .task-items').append(tr);
+                $('#'+idstr+' .task-evaluation-items').append(li);
+                add_select_action('#select-btn-'+item.id);
+            }
+            for(let i=0; i<data.data[num].profiles.length; ++i){
+                profile = data.data[num].profiles[i];
+                badge = '<span class="badge badge-secondary">'+profile.name+'</span> '
+                $('#'+idstr+' .card-footer').append(badge);
+            }
+        }
+    }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+        alert(textStatus);
+    });
+
+}
+var search = function(query) {
+    if( LAST_WORDS != "" && query == LAST_WORDS ){
+        return;
+    }
+    $('#search-results').empty();
+    ALL_TASKS = {};
+    LAST_WORDS = query;
+    get_page(1);
+}
+var add_select_action = function(id){
+    $(id).on('click',function(e){
+        itemCode = $(this).attr('data-id');
+        taskCode = $(this).attr('task-code');
+        item = ALL_ITEMS[itemCode];
+        task = ALL_TASKS[taskCode];
+        item.parent = task;
+        if(itemCode in SELECTED){
+        } else {
+            SELECTED[itemCode] = item;
+            row = '<div class="card card-outline card-primary">'
+                    + '<div class="card-header small"><div class="card-title"><span class="small">'
+                        + task.name
+                        + '</span></div><div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button></div>'
+                    + '</div>'
+                    + '<div class="card-body small p-2">'
+                        + item.name
+                    + "</div>"
+                + "</div>";
+            $('#target-items').append(row);
+        }
+        $('.added-number').text(Object.keys(SELECTED).length);
+        $('.control-sidebar').addClass('active');
+        var get_class = $("body").attr('class');
+        if (get_class == "fixed layout-top-nav control-sidebar-slide-open") {
+            //$('body').removeClass('control-sidebar-open');
+        } else {
+            $('#open-csidebar').click();
+        }
+    });
+}
+$(function () {
+    $('#template-card').hide();
+    search(LAST_WORDS);
+    $('#search-query').keypress(function(e){
+        if (e.keyCode == 13) {
+            search($(this).val());
+        }
+    });
+    $('.search-exec').on('click',function(e){
+        search($("#search-query").val());
+    });
+    $(window).on("scroll", function() {
+        if(PAGEINFO.page){
+        } else {
+            return;
+        }
+        var scrollHeight = $(document).height();
+        var scrollPosition = $(window).height() + $(window).scrollTop();
+        if ((scrollHeight - scrollPosition) <= 5) {
+            cur_page = PAGEINFO.page;
+            if( cur_page >= PAGEINFO.num_pages ){
+                return;
+            }
+            if(cur_page+1 == PAGE_LOADING){
+                return;
+            }
+            PAGE_LOADING = cur_page+1;
+            get_page(PAGE_LOADING);
+        }
+    });
+})
+</script>
+{% endblock %}

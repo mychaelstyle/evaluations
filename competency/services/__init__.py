@@ -1,4 +1,4 @@
-from ..models import TaskEvaluation, TaskFulltext, TaskEvaluationItem, TaskEvaluationTaskProfile, TaskProfile, TaskSkill, SkillEvaluation, SkillEvaluationKnowledge
+from ..models import TaskEvaluation, TaskFulltext, TaskEvaluationItem, TaskEvaluationTaskProfile, TaskProfile, TaskSkill, SkillEvaluation, SkillEvaluationKnowledge, TaskSearchWords
     
 def get_task_fulltext(taskid:int):
     # 関連タスク全ての配列
@@ -44,3 +44,19 @@ def get_task_fulltext(taskid:int):
         for knowledge in knowledges:
             result = result + knowledge.name + "\n"
     return result.lower()
+
+def register_searchword(word):
+    if word is None:
+        return
+    else:
+        word = word.replace("　"," ")
+        if len(word.strip()) == 0:
+            return
+    searchword = TaskSearchWords.objects.filter(word=word).first()
+    if searchword is None:
+        searchword = TaskSearchWords()
+        searchword.word = word
+        searchword.save()
+    else:
+        searchword.searched_count = searchword.searched_count + 1
+        searchword.save()
