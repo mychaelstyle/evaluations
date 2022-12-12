@@ -192,6 +192,8 @@
 <script src="{% static 'admin-lte/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
 <!-- Bootstrap Switch -->
 <script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+<!-- Bootstrap tooltip -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
 <script>
@@ -253,6 +255,7 @@ var postfile2api = function(url,formid,donefunc,failfunc){
   });
 }
 $(function(){
+  $('[data-toggle="tooltip"]').tooltip();
   $('#target-create-button').on('click',function(e){
     data = form2json('#target-create-form');
     document.cookie = 'first_name=' + encodeURIComponent(data['first_name']);

@@ -24,7 +24,6 @@ def create(request):
             print(m)
             pass
         data = json.loads(request.body)
-        print(data)
         form = TargetCreateForm(data)
         items = {}
         if not form.is_valid():
@@ -73,3 +72,35 @@ def create(request):
             return res.get()
 
     return res.get()
+
+def self_evaluation(request,id):
+    """自己評価の更新
+
+    Args:
+        request (_type_): _description_
+        code (_type_): _description_
+    """
+    res = CommonJsonResponse(request)
+    item = TargetTaskEvaluationItem.objects.filter(id=id).first()
+    if item is None:
+        raise Http404('not_found')
+    if request.method.lower() == "post":
+        for m in messages.get_messages(request):
+            print(m)
+            pass
+        data = json.loads(request.body)
+        if 'self_evaluation' not in data:
+            res.add_fielderror("self_evaluation",_("self_evaluation_is_required"))
+        elif not str.isdecimal(data['self_evaluation']):
+            res.add_fielderror("self_evaluation",_("self_evaluation_must_be_decimal"))
+        elif int(data['self_evaluation']) < 0 or int(data['self_evaluation']) > 100:
+            res.add_fielderror("self_evaluation",_("self_evaluation_must_be_0_to_100"))
+        if res.is_error():
+            res.add_message(_("validation_error"))
+            return res.get()
+
+        item.self_evaluation = int(data['self_evaluation'])
+        item.save()
+        
+        res.set_data(item)
+        return res.get()
