@@ -36,7 +36,7 @@ def target(request,uuid:str):
         if task.id not in tasks:
             tasks[task.id] = {"task":task}
             tasks[task.id]["items"] = []
-        tasks[task.id]["items"].append(item_relation.item)
+        tasks[task.id]["items"].append(item_relation)
     profiles = TaskEvaluationTaskProfile.objects.filter(task_evaluation_id__in=task_ids).all()
     for profiler in profiles:
         task_id = profiler.task_evaluation.id
@@ -48,8 +48,6 @@ def target(request,uuid:str):
     for skillrow in skills:
         task_id = skillrow.task_evaluation.id
         skill = skillrow.skill_evaluation
-        print('-------')
-        print(vars(skill))
         if "skills" not in tasks[task_id]:
             tasks[task_id]["skills"] = []
         tasks[task_id]["skills"].append(skill)
