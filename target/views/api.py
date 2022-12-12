@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from django.forms.models import model_to_dict
 from django.db import transaction
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
 import datetime
 import json
 
@@ -24,6 +25,8 @@ def create(request):
             print(m)
             pass
         data = json.loads(request.body)
+        if 'passcode' in data and len(data['passcode']) > 0:
+            data['passcode'] = make_password(data['passcode'])
         form = TargetCreateForm(data)
         items = {}
         if not form.is_valid():
@@ -81,7 +84,7 @@ def self_evaluation(request,id):
         code (_type_): _description_
     """
     res = CommonJsonResponse(request)
-    item = TargetTaskEvaluationItem.objects.filter(id=id).first()
+    item = TargetTaskEvaluationItem.objects.select_related('target','item').filter(id=id).first()
     if item is None:
         raise Http404('not_found')
     if request.method.lower() == "post":
@@ -89,6 +92,11 @@ def self_evaluation(request,id):
             print(m)
             pass
         data = json.loads(request.body)
+        if item.target.passcode is not None and len(item.target.passcode)>0:
+            if 'passcode' not in data:
+                res.add_fielderror("passcode",_("passcode_is_required"))
+            elif not check_password(data['passcode'],item.target.passcode):
+                res.add_fielderror("passcode",_("passcode_is_invalid"))
         if 'self_evaluation' not in data:
             res.add_fielderror("self_evaluation",_("self_evaluation_is_required"))
         elif not str.isdecimal(data['self_evaluation']):

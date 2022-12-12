@@ -11,7 +11,7 @@ class TargetCreateForm(forms.ModelForm):
     """
     class Meta:
         model = Target
-        fields = ['viewname','first_name','last_name','grade','industory','industory_opt','org_name','department_name','job','position','role','description']
+        fields = ['viewname','passcode','first_name','last_name','grade','industory','industory_opt','org_name','org_url','department_name','job','position','role','description']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
