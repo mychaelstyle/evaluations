@@ -83,6 +83,11 @@
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
+                <div class="row">
+                    <div class="col col-12 text-right">
+                        パスコード：<input class="form-group pull-right" type="password" name="passcode" id="passcode" size="10" value="">
+                    </div>
+                </div>
                 {% for key, task in tasks.items %}
                 <div class="row">
                     <div class="col-12">
@@ -236,6 +241,18 @@ $(function(){
         url = url.replace('000',relationId);
         data2api(url,'post', data, function(data){
             console.log(data);
+            if(data['result'] == 'OK'){
+
+            } else {
+                str = data['messages'] + "\n";
+                for (const [key, value] of Object.entries(data['field_errors'])) {
+                    console.log(data['field_errors'][key]);
+                    for (const msg of data['field_errors'][key]) {
+                        str = str + msg + "\n";
+                    }
+                }
+                alert(str);
+            }
         },function(XMLHttpRequest, textStatus, errorThrown){
             alert(errorThrown);
         });
