@@ -271,6 +271,7 @@ $(function(){
       item_ids.push(value.id);
     }
     data.items = item_ids;
+    console.log(data);
     data2api(url,'POST',data,function(data){
       if(data['result']=='NG'){
         for (const [key, value] of Object.entries(data['messages'])) {
@@ -285,6 +286,10 @@ $(function(){
             $(divname).text($(divname).text()+value[idx]);
           }
         }
+      } else {
+        console.log(data);
+        url = '/target/' + data['data']['uuid'];
+        window.location.href = url;
       }
     },function(XMLHttpRequest, textStatus, errorThrown){
       alert(errorThrown);

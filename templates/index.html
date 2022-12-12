@@ -130,6 +130,7 @@ var search = function(query) {
 }
 var add_select_action = function(id){
     $(id).on('click',function(e){
+        console.log(SELECTED);
         itemCode = $(this).attr('data-id');
         taskCode = $(this).attr('task-code');
         item = ALL_ITEMS[itemCode];
@@ -141,13 +142,23 @@ var add_select_action = function(id){
             row = '<div class="card card-outline card-primary">'
                     + '<div class="card-header small"><div class="card-title"><span class="small">'
                         + task.name
-                        + '</span></div><div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button></div>'
+                        + '</span></div><div class="card-tools">'
+                            +'<button type="button" class="btn btn-tool" data-card-widget="remove" id="item-remove-'+item.id
+                            +'" item-code="'+itemCode
+                            +'" task-code="'+taskCode
+                            +'"><i class="fas fa-times"></i></button></div>'
                     + '</div>'
                     + '<div class="card-body small p-2">'
                         + item.name
                     + "</div>"
                 + "</div>";
             $('#target-items').append(row);
+            $('#item-remove-'+item.id).on('click',function(e){
+                itemCode = $(this).attr('item-code');
+                taskCode = $(this).attr('task-code');
+                delete SELECTED[itemCode];
+                console.log(SELECTED);
+            });
         }
         $('.added-number').text(Object.keys(SELECTED).length);
         $('.control-sidebar').addClass('active');

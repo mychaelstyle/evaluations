@@ -31,8 +31,14 @@ python manage.py import_icd --type relation --file ~/Downloads/000068635.xlsx
 python manage.py makesearchdocuments
 ```
 
-3. runserverで起動するかサーバーのアプリケーションサーバーに配備してください
+3. collectstaticする
+
+```
+python manage.py collectstatic
+```
+
+4. runserverで起動するかサーバーのアプリケーションサーバーに配備してください
 
 4. 使い方
 
-まとめます
+ToDo
