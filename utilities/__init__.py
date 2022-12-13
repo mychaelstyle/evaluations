@@ -110,11 +110,10 @@ class CommonJsonResponse:
         self.body['field_errors'] = self.field_errors
         if len(self.messages) > 0 or len(self.field_errors) > 0:
             self.body['result'] = self.RESPONSE_RESULT_NG
-            self.body['csrf_token'] = get_token(self.request)
         else:
             self.body['result'] = self.RESPONSE_RESULT_OK
-            self.body['data'] = self.data
             if self.pageinfo is not None:
                 self.body['pageinfo'] = self.pageinfo
-            self.body['csrf_token'] = get_token(self.request)
+        self.body['csrf_token'] = get_token(self.request)
+        self.body['data'] = self.data
         return JsonResponse(self.body)
