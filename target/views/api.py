@@ -104,6 +104,7 @@ def self_evaluation(request,id):
         elif int(data['self_evaluation']) < 0 or int(data['self_evaluation']) > 100:
             res.add_fielderror("self_evaluation",_("self_evaluation_must_be_0_to_100"))
         if res.is_error():
+            res.set_data(item)
             res.add_message(_("validation_error"))
             return res.get()
 

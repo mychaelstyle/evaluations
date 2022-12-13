@@ -32,11 +32,11 @@
                 <div class="card card-widget widget-user">
                     <!-- Add the bg color to the header using any of the bg-* classes -->
                     <div class="widget-user-header text-white" style="background: url('{% static 'admin-lte/dist/img/photo1.png' %}') center center;">
-                    <h3 class="widget-user-username text-right">{{target.viewname}}</h3>
-                    <h5 class="widget-user-desc text-right">{{target.job}} {{target.last_name}} {{target.first_name}}</h5>
+                        <h1 class="widget-user-title text-white text-left">目標設定シート</h1>
+                        <h3 class="widget-user-username text-right">{{target.viewname}}</h3>
+                        <h5 class="widget-user-desc text-right">{{target.job}} {{target.last_name}} {{target.first_name}}</h5>
                     </div>
                     <div class="widget-user-image">
-                    <img class="img-circle" src="{% static 'admin-lte/dist/img/prod-3.jpg' %}" alt="User Avatar">
                     </div>
                     <div class="card-footer">
                     <div class="row">
@@ -103,36 +103,38 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body p-0">
-                                <table class="table table-striped">
-                                    <thead>
-                                      <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>評価項目</th>
-                                        <th style="width: 200px">
-                                            自己評価(%)
-                                        </th>
-                                        <th style="width: 40px"></th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {% for item_relation in task.items %}
-                                      <tr>
-                                        <td>{{item_relation.item.code}}</td>
-                                        <td>
-                                            {{item_relation.item.name}}
-                                        </td>
-                                        <td>
-                                            <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
-                                                evaluation-id="{{item_relation.id}}"
-                                                name="self-evaluation" value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
-                                        </td>
-                                        <td><span class="badge bg-{% if item_relation.self_evaluation < 30 %}danger{% elif item_relation.self_evaluation < 60 %}warning{% else %}primary{% endif %}"
+                                <div class="row p-3">
+                                    <div class="col-md-1 font-weight-bold">
+                                        #
+                                    </div>
+                                    <div class="col-md-9 font-weight-bold">
+                                        評価項目
+                                    </div>
+                                    <div class="col-md-2 font-weight-bold">
+                                        自己評価
+                                    </div>
+                                </div>
+                                {% for item_relation in task.items %}
+                                <div class="row p-3">
+                                    <div class="col-md-1 font-weight-bold text-nowrap">
+                                        {{item_relation.item.code}}
+                                    </div>
+                                    <div class="col-md-9">
+                                        {{item_relation.item.name}}
+                                    </div>
+                                    <div class="col-md-2 text-right d-flex">
+                                        <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
+                                        id="self-evaluation-{{item_relation.id}}"
+                                        evaluation-id="{{item_relation.id}}"
+                                        name="self-evaluation"
+                                        value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
+                                        origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
+                                        <span class="badge bg-{% if item_relation.self_evaluation <= 30 %}danger{% elif item_relation.self_evaluation <= 60 %}warning{% elif item_relation.self_evaluation > 60 %}primary{% else %}danger{% endif %}"
                                             id="self-evaluation-val-{{item_relation.id}}"
-                                            >{{item_relation.self_evaluation}}</span></td>
-                                      </tr>
-                                      {% endfor %}
-                                    </tbody>
-                                  </table>
+                                            >{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
                             <!-- /.card-footer -->
                             <div class="card-body">
@@ -194,46 +196,53 @@
 <!-- AdminLTE App -->
 <script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
 <script>
-    var CSRF_TOKEN = '{{csrf_token}}';
-    var data2api = function(url,method,data,donefunc,failfunc){
-        $('.overlay').show();
-        $.ajax({
-          url : url,
-          type : method,
-          dataType : 'json',
-          contentType: 'application/json',
-          data: JSON.stringify(data),
-          beforeSend: function(xhr, settings) {
-                          xhr.setRequestHeader("X-CSRFToken", CSRF_TOKEN);
-                      }
-        }).done(function(data){
-          CSRF_TOKEN = data.csrf_token;
-          donefunc(data);
-          $('.overlay').hide();
-        }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-          failfunc(XMLHttpRequest, textStatus, errorThrown);
-          $('.overlay').hide();
-        });
-      }
+var CSRF_TOKEN = '{{csrf_token}}';
+var data2api = function(url,method,data,donefunc,failfunc){
+    $('.overlay').show();
+    $.ajax({
+        url : url,
+        type : method,
+        dataType : 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        beforeSend: function(xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", CSRF_TOKEN);
+                    }
+    }).done(function(data){
+        CSRF_TOKEN = data.csrf_token;
+        donefunc(data);
+        $('.overlay').hide();
+    }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+        failfunc(XMLHttpRequest, textStatus, errorThrown);
+        $('.overlay').hide();
+    });
+}
+var changeScoreBadge = function(query, score){
+    if(score){
+        score = score;
+    } else {
+        score = 0;
+    }
+    $(query).text(score);
+    if(score<=30){
+        $(query).removeClass('bg-primary');
+        $(query).removeClass('bg-warning');
+        $(query).addClass('bg-danger');
+    } else if(score<=60){
+        $(query).removeClass('bg-primary');
+        $(query).removeClass('bg-danger');
+        $(query).addClass('bg-warning');
+    } else {
+        $(query).removeClass('bg-warning');
+        $(query).removeClass('bg-danger');
+        $(query).addClass('bg-primary');
+    }
+}
 $(function(){
     $('.self-evaluation').change(function(e){
         relationId = $(this).attr('evaluation-id');
         q = '#self-evaluation-val-' + relationId;
-        console.log($(this).val());
-        $(q).text($(this).val());
-        if($(this).val()<=30){
-            $(q).removeClass('bg-primary');
-            $(q).removeClass('bg-warning');
-            $(q).addClass('bg-danger');
-        } else if($(this).val()<=60){
-            $(q).removeClass('bg-primary');
-            $(q).removeClass('bg-danger');
-            $(q).addClass('bg-warning');
-        } else {
-            $(q).removeClass('bg-warning');
-            $(q).removeClass('bg-danger');
-            $(q).addClass('bg-primary');
-        }
+        changeScoreBadge(q,$(this).val());
         data = {
             self_evaluation : $(this).val()
         }
@@ -242,7 +251,6 @@ $(function(){
         data2api(url,'post', data, function(data){
             console.log(data);
             if(data['result'] == 'OK'){
-
             } else {
                 str = data['messages'] + "\n";
                 for (const [key, value] of Object.entries(data['field_errors'])) {
@@ -252,6 +260,12 @@ $(function(){
                     }
                 }
                 alert(str);
+                q = '#self-evaluation-'+data.data.id;
+                score = $(q).attr('origin-value');
+                console.log(q);
+                $(q).val($(q).attr('origin-value'));
+                q = '#self-evaluation-val-' + data.data.id;
+                changeScoreBadge(q,score);
             }
         },function(XMLHttpRequest, textStatus, errorThrown){
             alert(errorThrown);

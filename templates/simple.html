@@ -64,7 +64,7 @@
     <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
   </footer>
 
-  <aside class="control-sidebar control-sidebar-light sticky-top" id="cust_sidebar" style="width:500px;">
+  <aside class="control-sidebar control-sidebar-light sticky-top" id="cust_sidebar" style="width:400px;">
     <div class="p-3">
       <h5>目標設定シートの作成</h5>
       <form name="target-create-form" id="target-create-form" action="{% url 'api-target-create' %}" method="post">
@@ -100,7 +100,7 @@
             {{request.target_create_form.industory}}
           </div>
           <div class="col">
-            <label for="target-industory_opt">業界・業種（その他の場合）</label>
+            <label for="target-industory_opt">業界・業種（その他）</label>
             <input name="industory_opt" id="target-industory_opt" type="text" class="form-control" placeholder="分類にない業界を入力">
             <div class="invalid-feedback" id="feedback-industory_opt"></div>
           </div>
@@ -166,7 +166,7 @@
     </div>
   </aside>
 
-  <div class="col-4" id="template-card" style="displpay:noe;">
+  <div class="col-md-4" id="template-card" style="displpay:noe;">
     <div class="card card-primary card-outline">
         <div class="card-header">
             <h5 class="card-title m-0"></h5>
