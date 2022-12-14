@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-10 19:38+0900\n"
+"POT-Creation-Date: 2022-12-14 19:05+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
 #: competency/management/commands/import_icd.py:13
 msgid "インポートするExcelのタイプをtask|skill|relationで指定してください。"
 msgstr ""
@@ -311,25 +312,49 @@ msgstr "評価値"
 msgid "self_evaluation_value"
 msgstr "自己評価値"
 
-#: target/views/api.py:33
+#: target/views/api.py:35
 msgid "no_selected_items"
 msgstr "項目が選択されていません"
 
-#: target/views/api.py:37
+#: target/views/api.py:39
 msgid "select_more_than_3_items"
 msgstr "項目は３つ以上選択してください"
 
-#: target/views/api.py:39
+#: target/views/api.py:41
 msgid "select_less_than_10_items"
 msgstr "項目は10つまで設定できます"
 
-#: target/views/api.py:44
+#: target/views/api.py:46
 msgid "invalid_selected_items"
 msgstr "選択された項目のいずれかが正しくありません"
 
-#: target/views/api.py:48
+#: target/views/api.py:50 target/views/api.py:108
 msgid "validation_error"
 msgstr "入力内容を確認してください"
+
+#: target/views/api.py:97
+msgid "passcode_is_required"
+msgstr "パスコード入力欄に設定したパスコードを入力してください"
+
+#: target/views/api.py:99
+msgid "passcode_is_invalid"
+msgstr "パスコードが間違っています"
+
+#: target/views/api.py:101
+msgid "self_evaluation_is_required"
+msgstr "自己評価の値を入力してください"
+
+#: target/views/api.py:103
+#, fuzzy
+#| msgid "self_evaluation_value"
+msgid "self_evaluation_must_be_decimal"
+msgstr "自己評価値は自然数で入力してください"
+
+#: target/views/api.py:105
+#, fuzzy
+#| msgid "self_evaluation_value"
+msgid "self_evaluation_must_be_0_to_100"
+msgstr "自己評価値は0-100の値で入力してください"
 
 #: templates/simple.html:10 templates/simple.html:31 templates/target.html:11
 msgid "site_title"

@@ -244,7 +244,8 @@ $(function(){
         q = '#self-evaluation-val-' + relationId;
         changeScoreBadge(q,$(this).val());
         data = {
-            self_evaluation : $(this).val()
+            self_evaluation : $(this).val(),
+            passcode : $('#passcode').val()
         }
         url = '{% url "self-evaluation" '000' %}';
         url = url.replace('000',relationId);
