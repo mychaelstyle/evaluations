@@ -9,8 +9,8 @@ import datetime
 import json
 
 from competency.models import TaskEvaluationItem
-from ..models import Target, TargetTaskEvaluationItem
-from ..forms import TargetCreateForm
+from ..models import Target, TargetTaskEvaluationItem, TargetTaskEvaluationItemAction
+from ..forms import TargetCreateForm, TargetTaskEvaluationItemActionCreateForm
 from utilities import CommonJsonResponse
 
 def create(request):
@@ -113,3 +113,39 @@ def self_evaluation(request,id):
         
         res.set_data(item)
         return res.get()
+
+def create_action(request,eval_item_id):
+    """目標設定項目アクションを新規作成する
+
+    Args:
+        request (_type_): _description_
+        eval_item_id (_type_): _description_
+    """
+    eval_item = TargetTaskEvaluationItemAction.objects.select_related('target','item').filter(id=eval_item_id).first()
+    res = CommonJsonResponse(request)
+    if eval_item is None:
+        raise Http404('not_found')
+    if request.method.lower() == "post":
+        for m in messages.get_messages(request):
+            print(m)
+            pass
+        data = json.loads(request.body)
+        form = TargetTaskEvaluationItemActionCreateForm(data)
+        if eval_item.target.passcode is not None and len(eval_item.target.passcode)>0:
+            if 'passcode' not in data:
+                res.add_fielderror("passcode",_("passcode_is_required"))
+            elif not check_password(data['passcode'],eval_item.target.passcode):
+                res.add_fielderror("passcode",_("passcode_is_invalid"))
+        elif not form.is_valid():
+            res.set_fielderrors(form.errors)
+        if res.is_error():
+            res.set_data(eval_item)
+            res.add_message(_("validation_error"))
+            return res.get()
+        
+        form.save()
+        instance = form.instance
+        res.set_data(instance)
+        return res.get()
+    else:
+        raise Http404('not_found')

@@ -140,6 +140,8 @@ class Evaluation(BaseModel):
         BaseModel (_type_): _description_
     """
     uuid = models.UUIDField(verbose_name=_("UUID"),default=uuid.uuid4, editable=False, unique=True, db_index=True)
+    target = models.ForeignKey(Target, verbose_name=_("target"),null=False,
+                            db_index=True,blank=False,on_delete=models.CASCADE,related_name="evaluations")
     passcode = models.CharField(verbose_name=_("passcode"), null=True, blank=True, max_length=255)
     first_name = models.CharField(verbose_name=_("first_name"),max_length=100,null=True,blank=True)
     last_name = models.CharField(verbose_name=_("last_name"),max_length=100,null=True,blank=True)

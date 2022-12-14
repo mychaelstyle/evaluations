@@ -104,10 +104,7 @@
                             <!-- /.card-header -->
                             <div class="card-body p-0">
                                 <div class="row p-3">
-                                    <div class="col-md-1 font-weight-bold">
-                                        #
-                                    </div>
-                                    <div class="col-md-9 font-weight-bold">
+                                    <div class="col-md-10 font-weight-bold">
                                         評価項目
                                     </div>
                                     <div class="col-md-2 font-weight-bold">
@@ -132,6 +129,30 @@
                                         <span class="badge bg-{% if item_relation.self_evaluation <= 30 %}danger{% elif item_relation.self_evaluation <= 60 %}warning{% elif item_relation.self_evaluation > 60 %}primary{% else %}danger{% endif %}"
                                             id="self-evaluation-val-{{item_relation.id}}"
                                             >{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}</span>
+                                    </div>
+                                </div>
+                                <div class="row p-3">
+                                    <div class="col-md-12 font-weight-bold text-right">
+                                        <a href="#" data-toggle="collapse"
+                                        data-target="#related-actions-{{item_relation.id}}" aria-expanded="false"
+                                        aria-controls="related-actions-{{item_relation.id}}">アクション設定 <i class="fa-solid fa-plus"></i></a>
+                                    </div>
+                                </div>
+                                <div class="row p-3 collapse form-row align-items-right" id="related-actions-{{item_relation.id}}">
+                                    <div class="col-auto">
+                                    <label class="sr-only" for="inlineFormInput">アクションタイプ</label>
+                                    {{action_form.action_type}}
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="sr-only" for="inlineFormInputGroup">アクション名</label>
+                                        {{action_form.name}}
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="sr-only" for="inlineFormInputGroup">関連URL</label>
+                                        {{action_form.url}}
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-primary mb-2">登録</button>
                                     </div>
                                 </div>
                                 {% endfor %}

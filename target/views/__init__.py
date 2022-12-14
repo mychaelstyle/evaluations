@@ -5,6 +5,7 @@ from . import api
 
 from competency.models import TaskEvaluationTaskProfile, TaskSkill
 from ..models import Target
+from ..forms import TargetTaskEvaluationItemActionCreateForm
 
 # Create your views here.
 
@@ -51,5 +52,6 @@ def target(request,uuid:str):
         if "skills" not in tasks[task_id]:
             tasks[task_id]["skills"] = []
         tasks[task_id]["skills"].append(skill)
-        
-    return render(request, 'target.html', {'target':target, 'tasks':tasks})
+    
+    action_form = TargetTaskEvaluationItemActionCreateForm()
+    return render(request, 'target.html', {'target':target, 'tasks':tasks, 'action_form':action_form})
