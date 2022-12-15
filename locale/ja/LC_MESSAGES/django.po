@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-10 19:38+0900\n"
+"POT-Creation-Date: 2022-12-15 20:01+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
 #: competency/management/commands/import_icd.py:13
 msgid "インポートするExcelのタイプをtask|skill|relationで指定してください。"
 msgstr ""
@@ -38,11 +39,11 @@ msgid ""
 "タイプオプション(--type)はtask|skill|relationのいずれかで指定してください。"
 msgstr ""
 
-#: competency/models.py:14 target/models.py:80
+#: competency/models.py:14 target/models.py:81
 msgid "created_at"
 msgstr "作成日時"
 
-#: competency/models.py:15 target/models.py:81
+#: competency/models.py:15 target/models.py:82
 msgid "updated_at"
 msgstr "更新日時"
 
@@ -145,6 +146,14 @@ msgstr "英語"
 msgid "Japanese"
 msgstr "日本語"
 
+#: target/forms.py:32
+msgid "例)「基礎からわかるURLデザイン」の第5章までを読んで例題を実践する。"
+msgstr ""
+
+#: target/forms.py:33
+msgid "https://example.com/.."
+msgstr ""
+
 #: target/models.py:9
 msgid "students"
 msgstr "学生"
@@ -201,135 +210,159 @@ msgstr "何か成果物を作る"
 msgid "presentation"
 msgstr "プレゼンする"
 
-#: target/models.py:91 target/models.py:142
+#: target/models.py:70
+msgid "learnig_on_a_website"
+msgstr "Webサイトで学習する"
+
+#: target/models.py:92 target/models.py:143
 msgid "UUID"
 msgstr "UUID"
 
-#: target/models.py:92 target/models.py:143
+#: target/models.py:93 target/models.py:146
 msgid "passcode"
 msgstr "パスコード"
 
-#: target/models.py:93
+#: target/models.py:94
 msgid "viewcode"
 msgstr "表示コード"
 
-#: target/models.py:94
+#: target/models.py:95
 msgid "is_open"
 msgstr "公開"
 
-#: target/models.py:95
+#: target/models.py:96
 msgid "target_viewname"
 msgstr "目標設定名"
 
-#: target/models.py:96 target/models.py:144
+#: target/models.py:97 target/models.py:147
 msgid "first_name"
 msgstr "名"
 
-#: target/models.py:97 target/models.py:145
+#: target/models.py:98 target/models.py:148
 msgid "last_name"
 msgstr "姓"
 
-#: target/models.py:98
+#: target/models.py:99
 msgid "target_date"
 msgstr "目標期限日"
 
-#: target/models.py:99 target/models.py:146
+#: target/models.py:100 target/models.py:149
 msgid "grade"
 msgstr "グレード"
 
-#: target/models.py:100 target/models.py:102 target/models.py:147
-#: target/models.py:149
+#: target/models.py:101 target/models.py:103 target/models.py:150
+#: target/models.py:152
 msgid "organization_name"
 msgstr "組織名"
 
-#: target/models.py:101 target/models.py:148
+#: target/models.py:102 target/models.py:151
 msgid "industry_optional"
 msgstr "業界・業種その他"
 
-#: target/models.py:103 target/models.py:150
+#: target/models.py:104 target/models.py:153
 msgid "organization_url"
 msgstr "組織URL"
 
-#: target/models.py:104 target/models.py:151
+#: target/models.py:105 target/models.py:154
 msgid "department_name"
 msgstr "部門・部署名"
 
-#: target/models.py:105 target/models.py:106 target/models.py:107
-#: target/models.py:152 target/models.py:153 target/models.py:154
+#: target/models.py:106 target/models.py:107 target/models.py:108
+#: target/models.py:155 target/models.py:156 target/models.py:157
 msgid "role"
 msgstr "役割"
 
-#: target/models.py:108 target/models.py:132
+#: target/models.py:109 target/models.py:133
 msgid "description"
 msgstr "概要"
 
-#: target/models.py:116
+#: target/models.py:117 target/models.py:144
 msgid "target"
 msgstr "目標"
 
-#: target/models.py:118
+#: target/models.py:119
 msgid "task_evaluation_item"
 msgstr "タスク評価項目"
 
-#: target/models.py:120
+#: target/models.py:121
 msgid "self_evaluation"
 msgstr "自己評価"
 
-#: target/models.py:128 target/models.py:165
+#: target/models.py:129 target/models.py:168
 msgid "target_item"
 msgstr "目標項目"
 
-#: target/models.py:130
+#: target/models.py:131
 msgid "user_viewname"
 msgstr "表示名"
 
-#: target/models.py:131
+#: target/models.py:132
 msgid "action_type"
 msgstr "行動タイプ"
 
-#: target/models.py:133
+#: target/models.py:134
 msgid "url"
 msgstr "URL"
 
-#: target/models.py:134
+#: target/models.py:135
 msgid "progress"
 msgstr "進捗"
 
-#: target/models.py:155
+#: target/models.py:158
 msgid "feedback_notes"
 msgstr "フィードバック"
 
-#: target/models.py:163
+#: target/models.py:166
 msgid "evaluation"
 msgstr "評価"
 
-#: target/models.py:167
+#: target/models.py:170
 msgid "evaluation_value"
 msgstr "評価値"
 
-#: target/models.py:168
+#: target/models.py:171
 msgid "self_evaluation_value"
 msgstr "自己評価値"
 
-#: target/views/api.py:33
+#: target/views/__init__.py:71 target/views/api.py:96 target/views/api.py:135
+msgid "passcode_is_required"
+msgstr "パスコード入力欄に設定したパスコードを入力してください"
+
+#: target/views/__init__.py:74 target/views/api.py:98 target/views/api.py:137
+msgid "passcode_is_invalid"
+msgstr "パスコードが間違っています"
+
+#: target/views/api.py:34
 msgid "no_selected_items"
 msgstr "項目が選択されていません"
 
-#: target/views/api.py:37
+#: target/views/api.py:38
 msgid "select_more_than_3_items"
 msgstr "項目は３つ以上選択してください"
 
-#: target/views/api.py:39
+#: target/views/api.py:40
 msgid "select_less_than_10_items"
 msgstr "項目は10つまで設定できます"
 
-#: target/views/api.py:44
+#: target/views/api.py:45
 msgid "invalid_selected_items"
 msgstr "選択された項目のいずれかが正しくありません"
 
-#: target/views/api.py:48
+#: target/views/api.py:49 target/views/api.py:107 target/views/api.py:142
 msgid "validation_error"
 msgstr "入力内容を確認してください"
+
+#: target/views/api.py:100
+msgid "self_evaluation_is_required"
+msgstr "自己評価の値を入力してください"
+
+#: target/views/api.py:102
+msgid "self_evaluation_must_be_decimal"
+msgstr "自己評価値は自然数で入力してください"
+
+#: target/views/api.py:104
+msgid "self_evaluation_must_be_0_to_100"
+msgstr "自己評価値は0-100の値で入力してください"
 
 #: templates/simple.html:10 templates/simple.html:31 templates/target.html:11
 msgid "site_title"

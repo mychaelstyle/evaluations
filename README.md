@@ -31,9 +31,10 @@ python manage.py import_icd --type relation --file ~/Downloads/000068635.xlsx
 python manage.py makesearchdocuments
 ```
 
-3. collectstaticする
+3. キャッシュテーブルとstaticファイル収集
 
 ```
+python manage.py createcachetable
 python manage.py collectstatic
 ```
 
