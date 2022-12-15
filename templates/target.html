@@ -83,6 +83,15 @@
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
+                {% if messages %}
+                <div class="row">
+                    {% for message in messages %}
+                    <div class="col col-md-12 alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 <div class="row">
                     <div class="col col-12 text-right">
                         パスコード：<input class="form-group pull-right" type="password" name="passcode" id="passcode" size="10" value="">
@@ -102,15 +111,12 @@
                                 <!-- /.card-tools -->
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body p-0">
-                                <div class="row p-3">
-                                    <div class="col-md-1 font-weight-bold">
-                                        #
-                                    </div>
-                                    <div class="col-md-9 font-weight-bold">
+                            <div class="card-body p-2">
+                                <div class="row p-2">
+                                    <div class="col-md-10 font-weight-bold">
                                         評価項目
                                     </div>
-                                    <div class="col-md-2 font-weight-bold">
+                                    <div class="col-md-2 font-weight-bold text-right">
                                         自己評価
                                     </div>
                                 </div>
@@ -120,18 +126,24 @@
                                         {{item_relation.item.code}}
                                     </div>
                                     <div class="col-md-9">
-                                        {{item_relation.item.name}}
+                                        <div class="row p-0 font-weight-bold">
+                                            {{item_relation.item.name}}
+                                        </div>
+                                        {% for action in item_relation.actions.all %}
+                                        <div class="row p-0 pl-3">
+                                            {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
+                                                {{action.name}}
+                                            {% if action.url %}</a>{% endif %}
+                                        </div>
+                                        {% endfor %}
                                     </div>
-                                    <div class="col-md-2 text-right d-flex">
+                                    <div class="col-md-2 text-right">
                                         <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
                                         id="self-evaluation-{{item_relation.id}}"
                                         evaluation-id="{{item_relation.id}}"
                                         name="self-evaluation"
                                         value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
                                         origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
-                                        <span class="badge bg-{% if item_relation.self_evaluation <= 30 %}danger{% elif item_relation.self_evaluation <= 60 %}warning{% elif item_relation.self_evaluation > 60 %}primary{% else %}danger{% endif %}"
-                                            id="self-evaluation-val-{{item_relation.id}}"
-                                            >{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}</span>
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -159,6 +171,77 @@
                     </div>
                 </div>
                 {% endfor %}
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form name="add-action-from" id="add-action-form" action="{% url 'add-action' target.uuid %}" method="post">
+                            {% csrf_token %}
+                            <div class="card card-outline card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">目標に対するアクションを設定</h3>
+                                    <div class="card-tools">
+                                    </div>
+                                    <!-- /.card-tools -->
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-3">
+                                    <div class="col form-group">
+                                        <label for="target-item-action-target_item">対象項目</label>
+                                        <select name="target_item" id="target-item-action-target_item" class="form-control">
+                                            {% for key, task in tasks.items %}
+                                            {% for item_relation in task.items %}
+                                            <option value="{{item_relation.id}}">{{task.task.name}} : {{item_relation.item.name}}</option>
+                                            {% endfor %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col form-group">
+                                            <label for="target-item-action-action_type">アクションタイプ</label>
+                                            {{action_form.action_type}}
+                                        </div>
+                                        <div class="col form-group">
+                                            <label for="target-item-action-name">パスコード</label>
+                                            <input type="password" name="passcode" id="target-item-action-passcode" class="form-control" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col form-group">
+                                        <label for="target-item-action-name">何をしますか？</label>
+                                        {{action_form.name}}
+                                    </div>
+                                    <div class="col form-group">
+                                        <label for="target-item-action-url">関連URL (講座や書籍のURLを入力してください)</label>
+                                        {{action_form.url}}
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary mb-2">登録</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-outline card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">説明・ご注意</h3>
+                                <div class="card-tools">
+                                </div>
+                                <!-- /.card-tools -->
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body p-3">
+                                <ul>
+                                    <li>目標設定は3〜5項目で3ヶ月前後を目処に振り返りをしてまた新しく作るというサイクルが良いと思います。本ページをブックマークするなりURLをとっておいて見直し、自己評価を振り返ると良いでしょう。</li>
+                                    <li>「関連スキル・知識を見る」ボタンを押すと、単語が展開されます。必要な知識を得るための書籍や講座を検索するのにご利用ください。</li>
+                                    <li>目標に対するアクションを設定しておくと、進捗・達成率を記録できるようになります（時間があるときにちょこちょこと実装します）</li>
+                                    <li>本ツールは現状あくまで個人で運用しているツールです。ご利用は無料です。何かご意見・ご質問等ありましたが現状はTwitterの方でお願いします。</li>
+                                    <li>目標設定URLはランダムでユニークに発行されており、本システムで他人のURLを無断で公開することはありません。目標設定URLの取り扱いはあくまで自己責任でお願いいたします。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
         <!-- /.Main content -->
@@ -172,7 +255,7 @@
         <div class="float-right d-none d-sm-inline">
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2022- <a href="https://twitter.com/haruchaco" target="_blank"><i class="fa-brands fa-twitter"></i></a>.</strong> All rights reserved.
     </footer>
 
 </div>
@@ -195,28 +278,10 @@
 <script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
+<!-- common -->
+<script src="{% static 'js/common.js' %}"></script>
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
-var data2api = function(url,method,data,donefunc,failfunc){
-    $('.overlay').show();
-    $.ajax({
-        url : url,
-        type : method,
-        dataType : 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", CSRF_TOKEN);
-                    }
-    }).done(function(data){
-        CSRF_TOKEN = data.csrf_token;
-        donefunc(data);
-        $('.overlay').hide();
-    }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-        failfunc(XMLHttpRequest, textStatus, errorThrown);
-        $('.overlay').hide();
-    });
-}
 var changeScoreBadge = function(query, score){
     if(score){
         score = score;

@@ -67,6 +67,7 @@ ACTION_TYPES = (
     (20,_("take_a_seminar")),
     (30,_("make_anything")),
     (40,_("presentation")),
+    (50,_("learnig_on_a_website")),
 )
 #
 # 本アプリケーションのベースモデル
@@ -128,9 +129,9 @@ class TargetTaskEvaluationItemAction(BaseModel):
     target_item = models.ForeignKey(TargetTaskEvaluationItem, verbose_name=_("target_item"),null=False,
                             db_index=True,blank=False,on_delete=models.CASCADE,related_name="actions")
     name = models.CharField(verbose_name=_("user_viewname"),max_length=255, null=False, blank=False)
-    action_type = models.PositiveSmallIntegerField(verbose_name=_('action_type'),choices=ACTION_TYPES, null=True, blank=True)
+    action_type = models.PositiveSmallIntegerField(verbose_name=_('action_type'),choices=ACTION_TYPES, null=False, blank=False)
     description = models.TextField(verbose_name=_("description"), null=True, blank=True, max_length=500)
-    url = models.CharField(verbose_name=_("url"), max_length=255, null=True, blank=True)
+    url = models.TextField(verbose_name=_("url"), max_length=2000, null=True, blank=True)
     progress = models.PositiveSmallIntegerField(verbose_name=_("progress"), null=False, blank=False, default=0)
 
 class Evaluation(BaseModel):
@@ -140,6 +141,8 @@ class Evaluation(BaseModel):
         BaseModel (_type_): _description_
     """
     uuid = models.UUIDField(verbose_name=_("UUID"),default=uuid.uuid4, editable=False, unique=True, db_index=True)
+    target = models.ForeignKey(Target, verbose_name=_("target"),null=False,
+                            db_index=True,blank=False,on_delete=models.CASCADE,related_name="evaluations")
     passcode = models.CharField(verbose_name=_("passcode"), null=True, blank=True, max_length=255)
     first_name = models.CharField(verbose_name=_("first_name"),max_length=100,null=True,blank=True)
     last_name = models.CharField(verbose_name=_("last_name"),max_length=100,null=True,blank=True)

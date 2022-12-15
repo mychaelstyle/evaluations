@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.db.models import Prefetch
 from django.db.models import Subquery, OuterRef
 from django.core.paginator import Paginator
+from django.core.cache import cache
 import inspect
 
 from utilities import CommonJsonResponse
@@ -21,6 +22,14 @@ def search(request):
     per_page = request.GET.get("perpage",100)
     page = request.GET.get("page",1)
     page = int(page)
+    # cache
+    cachekey = "search-result-data-" + query + "-" + str(page) + "/" + str(per_page)
+    cachedata = cache.get(cachekey)
+    if cachedata is not None:
+        res.pageinfo = cachedata['pageinfo']
+        res.set_data(cachedata['data'],perpage=per_page,page=page)
+        return res.get()
+        
     # main query
     queryset = TaskEvaluation.objects.filter(competency_id=competency_id)
     if node_level is None:
@@ -66,7 +75,8 @@ def search(request):
         rd['items'] = items
         rd['profiles'] = profiles
         data.append(rd)
-
+    cachedata = {'data':data, 'pageinfo':res.pageinfo}
+    cache.set(cachekey,cachedata,60*60*24*7)
     res.set_data(data,perpage=per_page,page=page)
 
     """
