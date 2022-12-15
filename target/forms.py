@@ -28,7 +28,10 @@ class TargetTaskEvaluationItemActionCreateForm(forms.ModelForm):
     class Meta:
         model = TargetTaskEvaluationItemAction
         fields = ['target_item','name','action_type','description','url']
-    
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder':_('例)「基礎からわかるURLデザイン」の第5章までを読んで例題を実践する。')}),
+            'url': forms.URLInput(attrs={'placeholder':_('https://example.com/..')})
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for key in self.fields:
