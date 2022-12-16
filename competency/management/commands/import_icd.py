@@ -10,17 +10,17 @@ class Command(BaseCommand):
     file = None
     COMPETENCY_NAME = "iコンピテンシディレクトリ"
     def add_arguments(self, parser):
-        parser.add_argument('--type', help=_('インポートするExcelのタイプをtask|skill|relationで指定してください。'), required=True, type=str)
-        parser.add_argument('--file', help=_('インポートするファイルパスを入力してください。'), required=True, type=str)
+        parser.add_argument('--type', help=_('command_option_type_help'), required=True, type=str)
+        parser.add_argument('--file', help=_('command_option_file_help'), required=True, type=str)
     
     def handle(self, *args, **options):
         try:
             print('バッチが動きました： {}'.format(options))
             self.file = options['file']
             if not os.path.isfile(self.file):
-                print(_('指定されたパスにファイルが存在しません'))
+                print(_('command_error_file_not_found'))
             elif not self.file.endswith('.xlsx'):
-                print(_('Excel形式のファイルを指定してください'))
+                print(_('command_error_file_must_be_excel'))
             elif 'task' == options['type'].lower():
                 self.import_tasks()
                 self.import_profile()
@@ -30,7 +30,7 @@ class Command(BaseCommand):
             elif 'relation' == options['type'].lower():
                 self.import_relation()
             else:
-                print(_('タイプオプション(--type)はtask|skill|relationのいずれかで指定してください。'))
+                print(_('command_error_type_is_invalid'))
         except Exception as e:
             print(e)
     

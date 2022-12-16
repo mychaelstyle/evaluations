@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 19:05+0900\n"
+"POT-Creation-Date: 2022-12-16 09:26+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,25 +19,25 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: competency/management/commands/import_icd.py:13
-msgid "インポートするExcelのタイプをtask|skill|relationで指定してください。"
-msgstr ""
+msgid "command_option_type_help"
+msgstr "インポートするExcelのタイプをtask|skill|relationで指定してください。"
 
 #: competency/management/commands/import_icd.py:14
-msgid "インポートするファイルパスを入力してください。"
-msgstr ""
+msgid "command_option_file_help"
+msgstr "インポートするファイルパスを入力してください。"
 
 #: competency/management/commands/import_icd.py:21
-msgid "指定されたパスにファイルが存在しません"
-msgstr ""
+msgid "command_error_file_not_found"
+msgstr "指定されたパスにファイルが存在しません"
 
 #: competency/management/commands/import_icd.py:23
-msgid "Excel形式のファイルを指定してください"
-msgstr ""
+msgid "command_error_file_must_be_excel"
+msgstr "Excel形式のファイルを指定してください"
 
 #: competency/management/commands/import_icd.py:33
-msgid ""
-"タイプオプション(--type)はtask|skill|relationのいずれかで指定してください。"
+msgid "command_error_type_is_invalid"
 msgstr ""
+"タイプオプション(--type)はtask|skill|relationのいずれかで指定してください。"
 
 #: competency/models.py:14 target/models.py:81
 msgid "created_at"
@@ -147,12 +147,12 @@ msgid "Japanese"
 msgstr "日本語"
 
 #: target/forms.py:32
-msgid "例)「基礎からわかるURLデザイン」の第5章までを読んで例題を実践する。"
-msgstr ""
+msgid "action_name_placeholder"
+msgstr "講座や書籍名、業務名と達成目標を記述します"
 
 #: target/forms.py:33
-msgid "https://example.com/.."
-msgstr ""
+msgid "action_url_placeholder"
+msgstr "https://example.com/.."
 
 #: target/models.py:9
 msgid "students"
@@ -324,47 +324,43 @@ msgstr "評価値"
 msgid "self_evaluation_value"
 msgstr "自己評価値"
 
-#: target/views/api.py:35
-msgid "no_selected_items"
-msgstr "項目が選択されていません"
-
-#: target/views/api.py:39
-msgid "select_more_than_3_items"
-msgstr "項目は３つ以上選択してください"
-
-#: target/views/api.py:41
-msgid "select_less_than_10_items"
-msgstr "項目は10つまで設定できます"
-
-#: target/views/api.py:46
-msgid "invalid_selected_items"
-msgstr "選択された項目のいずれかが正しくありません"
-
-#: target/views/api.py:50 target/views/api.py:108
-msgid "validation_error"
-msgstr "入力内容を確認してください"
-
-#: target/views/api.py:97
+#: target/views/__init__.py:71 target/views/api.py:96 target/views/api.py:135
 msgid "passcode_is_required"
 msgstr "パスコード入力欄に設定したパスコードを入力してください"
 
-#: target/views/api.py:99
+#: target/views/__init__.py:74 target/views/api.py:98 target/views/api.py:137
 msgid "passcode_is_invalid"
 msgstr "パスコードが間違っています"
 
-#: target/views/api.py:101
+#: target/views/api.py:34
+msgid "no_selected_items"
+msgstr "項目が選択されていません"
+
+#: target/views/api.py:38
+msgid "select_more_than_3_items"
+msgstr "項目は３つ以上選択してください"
+
+#: target/views/api.py:40
+msgid "select_less_than_10_items"
+msgstr "項目は10つまで設定できます"
+
+#: target/views/api.py:45
+msgid "invalid_selected_items"
+msgstr "選択された項目のいずれかが正しくありません"
+
+#: target/views/api.py:49 target/views/api.py:107 target/views/api.py:142
+msgid "validation_error"
+msgstr "入力内容を確認してください"
+
+#: target/views/api.py:100
 msgid "self_evaluation_is_required"
 msgstr "自己評価の値を入力してください"
 
-#: target/views/api.py:103
-#, fuzzy
-#| msgid "self_evaluation_value"
+#: target/views/api.py:102
 msgid "self_evaluation_must_be_decimal"
 msgstr "自己評価値は自然数で入力してください"
 
-#: target/views/api.py:105
-#, fuzzy
-#| msgid "self_evaluation_value"
+#: target/views/api.py:104
 msgid "self_evaluation_must_be_0_to_100"
 msgstr "自己評価値は0-100の値で入力してください"
 
