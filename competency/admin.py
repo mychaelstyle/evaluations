@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Competency, TaskEvaluation, TaskEvaluationItem, SkillEvaluation, SkillEvaluationKnowledge, TaskSkill, TaskProfile, TaskEvaluationTaskProfile, TaskFulltext, TaskSearchWords
+from .models import Competency, TaskEvaluation, TaskEvaluationItem, SkillEvaluation, SkillEvaluationKnowledge, TaskSkill, TaskProfile, TaskEvaluationTaskProfile, TaskFulltext, TaskSearchWords,Synonym
 
 # Register your models here.
 class CompetencyAdmin(admin.ModelAdmin):
@@ -51,5 +51,10 @@ class TaskSearchWordsAdmin(admin.ModelAdmin):
     list_display = ('word','searched_count')
     ordering = ('-searched_count',)
 admin.site.register(TaskSearchWords,TaskSearchWordsAdmin)
+
+class SynonymAdmin(admin.ModelAdmin):
+    list_display = ('word','synonym','available')
+    ordering = ('-created_at',)
+admin.site.register(Synonym,SynonymAdmin)
 
 

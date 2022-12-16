@@ -176,3 +176,13 @@ class TaskSearchWords(BaseModel):
     """
     word = models.CharField(verbose_name=_("task_search_word"),max_length=255,db_index=True)
     searched_count = models.PositiveIntegerField(verbose_name=_("searched_count"),null=False,blank=False,default=1,db_index=True)
+
+class Synonym(BaseModel):
+    """類義語をまとめる辞書テーブル
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+    word = models.CharField(verbose_name=_("task_search_word"),max_length=100,db_index=True,null=False,blank=False)
+    synonym = models.CharField(verbose_name=_("task_search_word"),max_length=100,db_index=True,null=False,blank=False)
+    available = models.BooleanField(verbose_name=_("available"),null=False,blank=False,default=True)
