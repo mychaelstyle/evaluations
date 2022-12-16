@@ -31,11 +31,12 @@ python manage.py import_icd --type relation --file ~/Downloads/000068635.xlsx
 python manage.py makesearchdocuments
 ```
 
-3. キャッシュテーブルとstaticファイル収集
+3. キャッシュテーブルとstaticファイル収集と言語ファイルコンパイル
 
 ```
 python manage.py createcachetable
 python manage.py collectstatic
+python manage.py compilemessages
 ```
 
 4. runserverで起動するかサーバーのアプリケーションサーバーに配備してください
