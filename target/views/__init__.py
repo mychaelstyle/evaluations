@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 from django.http import Http404
+from django.forms import ValidationError
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
@@ -10,10 +11,22 @@ from . import api
 from competency.models import TaskEvaluationTaskProfile, TaskSkill
 from ..models import Target
 from ..forms import TargetTaskEvaluationItemActionCreateForm
+from ..services import is_authenticated, authenticate, remove_auth
 
 # Create your views here.
+def auth_passcode(request, uuid:str):
+    passcode = request.POST.get('passcode', None)
+    try:
+        target = authenticate(request=request,uuid=uuid,passcode=passcode)
+    except ValidationError as e:
+        messages.error(request,e)
+    return redirect("show-target",uuid)
 
-def target(request,uuid:str):
+def exit_authenticated(request, uuid:str):
+    remove_auth(request, uuid)
+    return redirect("show-target",uuid)
+
+def target(request, uuid:str):
     target = Target.objects.prefetch_related('items','items__item').filter(uuid=uuid).first()
     if target is None:
         raise Http404('Not found!')
@@ -51,8 +64,13 @@ def target(request,uuid:str):
         if "skills" not in tasks[task_id]:
             tasks[task_id]["skills"] = []
         tasks[task_id]["skills"].append(skill)
-    action_form = TargetTaskEvaluationItemActionCreateForm()
-    return render(request, 'target.html', {'target':target, 'tasks':tasks, 'action_form':action_form})
+    action_form = request.session.get('action_form',TargetTaskEvaluationItemActionCreateForm())
+    if 'action_form' in request.session:
+        del request.session['action_form']
+    
+    authenticated = is_authenticated(request,uuid)
+    
+    return render(request, 'target.html', {'target':target, 'tasks':tasks, 'action_form':action_form, 'authenticated':authenticated})
 
 def add_action(request,uuid:str):
     """目標設定にアクション項目を追加します
@@ -65,18 +83,15 @@ def add_action(request,uuid:str):
     form = TargetTaskEvaluationItemActionCreateForm(request.POST)
     if target is None:
         raise Http404('Not found!')
-    if len(target.passcode)>0:
-        passcode = request.POST.get('passcode', None)
-        if passcode is None or len(passcode)==0:
-            messages.error(request,_("passcode_is_required"))
-            return redirect("show-target",uuid)
-        elif not check_password(passcode,target.passcode):
-            messages.error(request,_("passcode_is_invalid"))
-            return redirect("show-target",uuid)
-        
-    if form.is_valid():
-        form.save()
-    else:
-        messages.error(request,form.errors)
     
+    if is_authenticated(request,uuid):
+        if form.is_valid():
+            form.save()
+        else:
+            messages.error(request,form.errors)
+            request.session['action_form'] = form
+    else:
+        messages.error(request,_("passcode_is_required"))
+        request.session['action_form'] = form
+
     return redirect("show-target",uuid)

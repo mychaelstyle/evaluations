@@ -162,5 +162,6 @@ CACHES = {
         'LOCATION': 'django_cache',
     }
 }
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
