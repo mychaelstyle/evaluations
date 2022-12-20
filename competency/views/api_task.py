@@ -8,6 +8,7 @@ from django.db.models import Subquery, OuterRef
 from django.core.paginator import Paginator
 from django.core.cache import cache
 import inspect
+import urllib.parse
 
 from utilities import CommonJsonResponse
 from ..models import TaskEvaluation, TaskEvaluationItem, TaskSkill, TaskFulltext, TaskSearchWords
@@ -23,7 +24,7 @@ def search(request):
     page = request.GET.get("page",1)
     page = int(page)
     # cache
-    cachekey = "search-result-data-" + query + "-" + str(page) + "/" + str(per_page)
+    cachekey = "search-result-data-" + urllib.parse.quote(query) + "-" + str(page) + "/" + str(per_page)
     cachedata = cache.get(cachekey)
     if cachedata is not None:
         res.pageinfo = cachedata['pageinfo']
