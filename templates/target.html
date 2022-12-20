@@ -7,8 +7,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="robots" content="noindex">
+  <meta name="googlebot" content="noindex">
 
-  <title>{% trans 'site_title' %}</title>
+  <title>{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}</title>
 
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
@@ -40,43 +42,66 @@
             <div class="container-fluid">
                 <div class="card card-widget widget-user">
                     <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header text-white" style="background: url('{% static 'admin-lte/dist/img/photo1.png' %}') center center;">
-                        <h1 class="widget-user-title text-white text-left">目標設定シート</h1>
-                        <h3 class="widget-user-username text-right">{{target.viewname}}</h3>
-                        <h5 class="widget-user-desc text-right">{{target.job}} {{target.last_name}} {{target.first_name}}</h5>
+                    <div class="p-3 text-white" style="background: url('{% static 'admin-lte/dist/img/photo1.png' %}') center center;">
+                        <div class="row">
+                            <div class="col col-md-6 text-nowrap">
+                                <h1 class="widget-user-title text-white text-left">目標設定シート</h1>
+                            </div>
+                            <div class="col col-md-6 text-nowrap">
+                                <h3 class="widget-user-username text-right">{{target.viewname}}</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="widget-user-desc text-right">
+                                    {% if target.industory %}{{target.get_industory_display}}{% endif %}
+                                    {% if target.industory_opt %}{{target.industory_opt}}{% endif %}
+                                </h5>
+                                <h5 class="widget-user-desc text-right">
+                                    {% if target.job %}{{target.job}}{% endif %}
+                                    {% if target.role %}{{target.role}}{% endif %}
+                                    {% if target.grade %}{{target.get_grade_display}}{% endif %}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-12">
+                                {{target.description}}
+                            </div>
+                        </div>
                     </div>
-                    <div class="widget-user-image">
-                    </div>
-                    <div class="card-footer">
+                    <div class="card-body">
                     <div class="row">
                         <div class="col-sm-3 border-right">
                         <div class="description-block">
-                            <h5 class="description-header">業界・業種</h5>
-                            <span class="description-text">{{target.get_industory_display}}<br>{{target.industory_opt}}</span>
+                            <h5 class="description-header">氏名</h5>
+                            <span class="description-text">{{target.last_name}} {{target.first_name}}</span>
                         </div>
                         <!-- /.description-block -->
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-3 border-right">
                         <div class="description-block">
-                            <h5 class="description-header">肩書き</h5>
-                            <span class="description-text">{{target.position}}</span>
+                            <h5 class="description-header">会社名</h5>
+                            <span class="description-text">
+                                {% if target.org_name %}{{target.org_name}}{% endif %}
+                            </span>
                         </div>
                         <!-- /.description-block -->
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-3 border-right">
                             <div class="description-block">
-                            <h5 class="description-header">概要</h5>
-                            <span class="description-text">{{target.description}}</span>
+                            <h5 class="description-header">部署・部門</h5>
+                            <span class="description-text">{% if target.department_name %}{{target.department_name}}{% endif %}</span>
                             </div>
                             <!-- /.description-block -->
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-3">
                         <div class="description-block">
-                            <h5 class="description-header">目標作成日</h5>
-                            <span class="description-text">{{target.created_at}}</span>
+                            <h5 class="description-header">肩書き</h5>
+                            <span class="description-text">{{target.position}}</span>
                         </div>
                         <!-- /.description-block -->
                         </div>
@@ -102,8 +127,25 @@
                 </div>
                 {% endif %}
                 <div class="row">
-                    <div class="col col-12 text-right">
-                        パスコード：<input class="form-group pull-right" type="password" name="passcode" id="passcode" size="10" value="">
+                    <div class="col col-md-6 text-left text-nowrap">
+                        作成：{{target.created_at}}
+                    </div>
+                    <div class="col col-md-6 text-right text-nowrap pb-3">
+                        {% if authenticated %}
+                        <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create-action" type="button">
+                                <i class="fa fa-plus-square"></i> 目標に対する行動目標を追加
+                            </button>     
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
+                        </form>
+                        {% else %}
+                        <form name="auth-passcode" method="post" action="{% url 'auth-passcode' target.uuid %}">
+                            {% csrf_token %}
+                            パスコード：<input class="form-group form-control-sm pull-right" type="password" name="passcode" id="passcode" size="10" value="">
+                            <button type="submit" class="btn btn-primary btn-sm">認証</button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
                 {% for key, task in tasks.items %}
@@ -121,41 +163,70 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body p-2">
-                                <div class="row p-2">
-                                    <div class="col-md-10 font-weight-bold">
-                                        評価項目
-                                    </div>
-                                    <div class="col-md-2 font-weight-bold text-right">
-                                        自己評価
-                                    </div>
-                                </div>
                                 {% for item_relation in task.items %}
                                 <div class="row p-3">
-                                    <div class="col-md-1 font-weight-bold text-nowrap">
+                                    <div class="col-md-1 p-1 font-weight-bold text-nowrap">
                                         {{item_relation.item.code}}
                                     </div>
-                                    <div class="col-md-9">
-                                        <div class="row p-0 font-weight-bold">
+                                    <div class="col-md-9 p-1 font-weight-bold">
+                                        <div class="">
                                             {{item_relation.item.name}}
                                         </div>
-                                        {% for action in item_relation.actions.all %}
-                                        <div class="row p-0 pl-3">
-                                            {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
-                                                {{action.name}}
-                                            {% if action.url %}</a>{% endif %}
-                                        </div>
-                                        {% endfor %}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
-                                        id="self-evaluation-{{item_relation.id}}"
-                                        evaluation-id="{{item_relation.id}}"
-                                        name="self-evaluation"
-                                        value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
-                                        origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
+                                        {% if authenticated %}
+                                        <div class="form-row d-flex">
+                                            <div class="col-auto">
+                                                <label for="self-evaluation-{{item_relation.id}}">自己評価</label>
+                                                <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
+                                                    id="self-evaluation-{{item_relation.id}}"
+                                                    evaluation-id="{{item_relation.id}}"
+                                                    name="self-evaluation"
+                                                    value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
+                                                    origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
+                                            </div>
+                                            <div class="col-auto">
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="progress progress-s">
+                                            <div class="progress-bar bg-success" style="width: {{item_relation.self_evaluation}}%">{{item_relation.self_evaluation}}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% for action in item_relation.actions.all %}
+                                <div class="row p-1 pl-5">
+                                    <div class="col-md-10 text-left">
+                                        {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
+                                            {{action.name}}
+                                        {% if action.url %}</a>{% endif %}
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        {% if authenticated %}
+                                        <div class="form-row d-flex">
+                                            <div class="col-auto">
+                                                <label for="self-evaluation-action-{{action.id}}">進捗率</label>
+                                                <input type="range" class="multi-range action-progress" min="0" max="100" step="20"
+                                                    id="self-evaluation-action-{{action.id}}"
+                                                    action-id="{{action.id}}"
+                                                    name="progress"
+                                                    value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}"
+                                                    origin-value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}">
+                                            </div>
+                                            <div class="col-auto">
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="progress progress-xs w-75">
+                                            <div class="progress-bar bg-info" style="width: {{action.progress}}%">{{action.progress}}%　</div>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 {% endfor %}
+                                {% endfor %}
+
                             </div>
                             <!-- /.card-footer -->
                             <div class="card-body">
@@ -182,54 +253,7 @@
                 {% endfor %}
                 <hr>
                 <div class="row">
-                    <div class="col-md-6">
-                        <form name="add-action-from" id="add-action-form" action="{% url 'add-action' target.uuid %}" method="post">
-                            {% csrf_token %}
-                            <div class="card card-outline card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">目標に対するアクションを設定</h3>
-                                    <div class="card-tools">
-                                    </div>
-                                    <!-- /.card-tools -->
-                                </div>
-                                <!-- /.card-header -->
-                                <div class="card-body p-3">
-                                    <div class="col form-group">
-                                        <label for="target-item-action-target_item">対象項目</label>
-                                        <select name="target_item" id="target-item-action-target_item" class="form-control">
-                                            {% for key, task in tasks.items %}
-                                            {% for item_relation in task.items %}
-                                            <option value="{{item_relation.id}}">{{task.task.name}} : {{item_relation.item.name}}</option>
-                                            {% endfor %}
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col form-group">
-                                            <label for="target-item-action-action_type">アクションタイプ</label>
-                                            {{action_form.action_type}}
-                                        </div>
-                                        <div class="col form-group">
-                                            <label for="target-item-action-name">パスコード</label>
-                                            <input type="password" name="passcode" id="target-item-action-passcode" class="form-control" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col form-group">
-                                        <label for="target-item-action-name">何をしますか？</label>
-                                        {{action_form.name}}
-                                    </div>
-                                    <div class="col form-group">
-                                        <label for="target-item-action-url">関連URL (講座や書籍のURLを入力してください)</label>
-                                        {{action_form.url}}
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary mb-2">登録</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card card-outline card-primary">
                             <div class="card-header">
                                 <h3 class="card-title">説明・ご注意</h3>
@@ -244,7 +268,7 @@
                                     <li>「関連スキル・知識を見る」ボタンを押すと、単語が展開されます。必要な知識を得るための書籍や講座を検索するのにご利用ください。</li>
                                     <li>目標に対するアクションを設定しておくと、進捗・達成率を記録できるようになります（時間があるときにちょこちょこと実装します）</li>
                                     <li>本ツールは現状あくまで個人で運用しているツールです。ご利用は無料です。何かご意見・ご質問等ありましたが現状はTwitterの方でお願いします。</li>
-                                    <li>目標設定URLはランダムでユニークに発行されており、本システムで他人のURLを無断で公開することはありません。目標設定URLの取り扱いはあくまで自己責任でお願いいたします。</li>
+                                    <li>目標設定URLはランダムでユニークに発行されており、本システムでURLを無断で公開することはありません。目標設定URLの取り扱いはあくまで自己責任でお願いいたします。</li>
                                 </ul>
                             </div>
                         </div>
@@ -270,6 +294,55 @@
 </div>
 <!-- /. wrapper -->
 
+{% if authenticated %}
+<div class="modal" id="modal-create-action">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{% trans 'create_action' %}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form name="add-action-from" id="add-action-form" action="{% url 'add-action' target.uuid %}" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="col form-group">
+                <label for="target-item-action-target_item">対象項目</label>
+                <select name="target_item" id="target-item-action-target_item" class="form-control">
+                    {% for key, task in tasks.items %}
+                    {% for item_relation in task.items %}
+                    <option value="{{item_relation.id}}">{{task.task.name}} : {{item_relation.item.name}}</option>
+                    {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row">
+                <div class="col form-group">
+                    <label for="target-item-action-action_type">アクションタイプ</label>
+                    {{action_form.action_type}}
+                </div>
+                <div class="col form-group">
+                </div>
+            </div>
+            <div class="col form-group">
+                <label for="target-item-action-name">何をしますか？</label>
+                {{action_form.name}}
+            </div>
+            <div class="col form-group">
+                <label for="target-item-action-url">関連URL (講座や書籍のURLを入力してください)</label>
+                {{action_form.url}}
+            </div>
+          </div>
+
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">とじる</button>
+            <button type="submit" class="btn btn-primary btn-task-create">アクションを作成</button>
+          </div>
+        </form> 
+    </div>
+</div>
+{% endif %}
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
@@ -291,32 +364,11 @@
 <script src="{% static 'js/common.js' %}"></script>
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
-var changeScoreBadge = function(query, score){
-    if(score){
-        score = score;
-    } else {
-        score = 0;
-    }
-    $(query).text(score);
-    if(score<=30){
-        $(query).removeClass('bg-primary');
-        $(query).removeClass('bg-warning');
-        $(query).addClass('bg-danger');
-    } else if(score<=60){
-        $(query).removeClass('bg-primary');
-        $(query).removeClass('bg-danger');
-        $(query).addClass('bg-warning');
-    } else {
-        $(query).removeClass('bg-warning');
-        $(query).removeClass('bg-danger');
-        $(query).addClass('bg-primary');
-    }
-}
+{% if authenticated %}
 $(function(){
     $('.self-evaluation').change(function(e){
         relationId = $(this).attr('evaluation-id');
         q = '#self-evaluation-val-' + relationId;
-        changeScoreBadge(q,$(this).val());
         data = {
             self_evaluation : $(this).val(),
             passcode : $('#passcode').val()
@@ -339,14 +391,42 @@ $(function(){
                 score = $(q).attr('origin-value');
                 console.log(q);
                 $(q).val($(q).attr('origin-value'));
-                q = '#self-evaluation-val-' + data.data.id;
-                changeScoreBadge(q,score);
             }
         },function(XMLHttpRequest, textStatus, errorThrown){
             alert(errorThrown);
         });
     });
+
+    $('.action-progress').change(function(e){
+        actionId = $(this).attr('action-id');
+        data = {
+            progress : $(this).val()
+        }
+        url = '{% url "action-progress" '000' %}';
+        url = url.replace('000',actionId);
+        data2api(url,'post', data, function(data){
+            console.log(data);
+            if(data['result'] == 'OK'){
+            } else {
+                str = data['messages'] + "\n";
+                for (const [key, value] of Object.entries(data['field_errors'])) {
+                    console.log(data['field_errors'][key]);
+                    for (const msg of data['field_errors'][key]) {
+                        str = str + msg + "\n";
+                    }
+                }
+                alert(str);
+                q = '#self-evaluation-action-'+data.data.id;
+                score = $(q).attr('origin-value');
+                $(q).val(score);
+            }
+        },function(XMLHttpRequest, textStatus, errorThrown){
+            alert(errorThrown);
+        });
+    });
+
 });
+{% endif %}
 </script>
 </body>
 </html>

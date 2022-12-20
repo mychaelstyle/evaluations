@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-16 09:26+0900\n"
+"POT-Creation-Date: 2022-12-20 15:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,11 +138,11 @@ msgstr "タスク検索ワード"
 msgid "searched_count"
 msgstr "検索回数"
 
-#: evaluations/settings.py:139
+#: evaluations/settings.py:140
 msgid "English"
 msgstr "英語"
 
-#: evaluations/settings.py:140
+#: evaluations/settings.py:141
 msgid "Japanese"
 msgstr "日本語"
 
@@ -324,46 +324,71 @@ msgstr "評価値"
 msgid "self_evaluation_value"
 msgstr "自己評価値"
 
-#: target/views/__init__.py:71 target/views/api.py:96 target/views/api.py:135
-msgid "passcode_is_required"
-msgstr "パスコード入力欄に設定したパスコードを入力してください"
-
-#: target/views/__init__.py:74 target/views/api.py:98 target/views/api.py:137
+#: target/services/__init__.py:53 target/services/__init__.py:61
 msgid "passcode_is_invalid"
 msgstr "パスコードが間違っています"
 
-#: target/views/api.py:34
+#: target/services/__init__.py:58 target/views/__init__.py:94
+#: target/views/api.py:104 target/views/api.py:148
+msgid "passcode_is_required"
+msgstr "パスコード入力欄に設定したパスコードを入力してください"
+
+#: target/views/api.py:36
 msgid "no_selected_items"
 msgstr "項目が選択されていません"
 
-#: target/views/api.py:38
+#: target/views/api.py:40
 msgid "select_more_than_3_items"
 msgstr "項目は３つ以上選択してください"
 
-#: target/views/api.py:40
+#: target/views/api.py:42
 msgid "select_less_than_10_items"
 msgstr "項目は10つまで設定できます"
 
-#: target/views/api.py:45
+#: target/views/api.py:47
 msgid "invalid_selected_items"
 msgstr "選択された項目のいずれかが正しくありません"
 
-#: target/views/api.py:49 target/views/api.py:107 target/views/api.py:142
+#: target/views/api.py:51 target/views/api.py:115 target/views/api.py:159
 msgid "validation_error"
 msgstr "入力内容を確認してください"
 
-#: target/views/api.py:100
+#: target/views/api.py:107
 msgid "self_evaluation_is_required"
 msgstr "自己評価の値を入力してください"
 
-#: target/views/api.py:102
+#: target/views/api.py:109
 msgid "self_evaluation_must_be_decimal"
 msgstr "自己評価値は自然数で入力してください"
 
-#: target/views/api.py:104
+#: target/views/api.py:111
 msgid "self_evaluation_must_be_0_to_100"
 msgstr "自己評価値は0-100の値で入力してください"
 
-#: templates/simple.html:10 templates/simple.html:31 templates/target.html:11
+#: target/views/api.py:151
+msgid "progress_is_required"
+msgstr "進捗率を入力してください。"
+
+#: target/views/api.py:153
+msgid "progress_must_be_decimal"
+msgstr "進捗率は自然数で入力してください"
+
+#: target/views/api.py:155
+msgid "progress_must_be_0_to_100"
+msgstr "進捗率は0-100の値で入力してください"
+
+#: templates/index.html:15
+msgid "Attention"
+msgstr "注意事項"
+
+#: templates/index.html:47
+msgid "Howtouse"
+msgstr "使い方"
+
+#: templates/simple.html:10 templates/simple.html:40 templates/target.html:13
 msgid "site_title"
-msgstr "評価・目標設定ビルダー"
+msgstr "スキルアップ目標設定サポートツール"
+
+#: templates/target.html:302
+msgid "create_action"
+msgstr "目標に対する行動目標を作成"
