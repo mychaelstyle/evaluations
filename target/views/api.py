@@ -6,13 +6,16 @@ from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 import datetime
+from django.utils import timezone
+from datetime import datetime, date, time, timedelta
+from uuid import uuid4
 import json
 
 from competency.models import TaskEvaluationItem
-from ..models import Target, TargetTaskEvaluationItem, TargetTaskEvaluationItemAction
+from ..models import Target, TargetTaskEvaluationItem, TargetTaskEvaluationItemAction, Evaluation
 from ..forms import TargetCreateForm, TargetTaskEvaluationItemActionCreateForm
-from ..services import is_authenticated, authenticate
-from utilities import CommonJsonResponse
+from ..services import is_authenticated, authenticate, get_anonymous
+from utilities import CommonJsonResponse, get_remote_address
 
 def create(request):
     """_summary_
@@ -65,12 +68,16 @@ def create(request):
                     evalitem.save()
                     item_objects.append(model_to_dict(evalitem.item))
                 target = Target.objects.prefetch_related('items','items__item').get(pk=target.id)
+                # 作成者のuuidを作成
+                creator_id = get_anonymous(request)
+                target.creator_id = creator_id
+                target.save()
                 target_dict = model_to_dict(target)
                 target_dict['uuid'] = target.uuid
                 target_dict['items'] = item_objects
                 print(target.uuid)
                 res.set_data(target_dict)
-                return res.get()
+                return res.get().set_cookie("euuid",str(creator_id))
         except Exception as e:
             res.add_message(e)
             return res.get()
@@ -119,7 +126,7 @@ def self_evaluation(request,id):
         item.save()
         
         res.set_data(item)
-        return res.get()
+        return res.get().set_cookie('euuid',item.target.creator_id)
 
 def action_progress(request,id):
     """自己評価の更新
@@ -165,3 +172,40 @@ def action_progress(request,id):
         res.set_data(action)
         return res.get()
 
+
+def request_evaluation(request,uuid:str):
+    """評価リクエストを作成
+
+    Args:
+        request (_type_): _description_
+        uuid (str): _description_
+    """
+    res = CommonJsonResponse(request)
+    target = Target.objects.prefetch_related('items','items__item').filter(uuid=uuid).first()
+    if target is None:
+        raise Http404('Not found!')
+
+    if not is_authenticated(request,uuid):
+        res.add_message(_('authentication_required'))
+        return res.get()
+    
+    if request.method.lower() == "post":
+        evaluation = Evaluation()
+        evaluation.target = target
+        for m in messages.get_messages(request):
+            pass
+        data = json.loads(request.body)
+        days = data.get('days', 14)
+        due_date = timezone.now() + timedelta(days=days)
+        evaluation.due_date = due_date.date()
+        evaluation.remote_address = get_remote_address(request)
+        evaluation.remote_host = request.META.get('REMOTE_HOST', None)
+        evaluation.user_agent = request.META.get('HTTP_USER_AGENT', None)
+        evaluation.save()
+        
+        evaluation = Evaluation.objects.filter(uuid=evaluation.uuid).first()
+        
+        res.set_data(evaluation)
+        return res.get()
+    
+    return res.get()

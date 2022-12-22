@@ -1,0 +1,73 @@
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="robots" content="noindex">
+  <meta name="googlebot" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}</title>
+
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'admin-lte/dist/css/adminlte.min.css' %}">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_ID}}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{GOOGLE_ANALYTICS_ID}}');
+</script>
+<body class="layout-boxed">
+<div class="wrapper align-items-center" style="max-width:800px;">
+    <div class="content-wrapper align-items-center">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- ./content-wrapper -->
+</div>
+<!-- ./wrapper -->
+
+{% block compornents %}
+{% endblock %}  
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'admin-lte/plugins/select2/js/select2.full.min.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'admin-lte/plugins/moment/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'admin-lte/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
+<!-- Bootstrap Switch -->
+<script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+<!-- Bootstrap tooltip -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
+<!-- common -->
+<script src="{% static 'js/common.js' %}"></script>
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

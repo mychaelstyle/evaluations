@@ -1,0 +1,58 @@
+
+{% extends 'evaluation/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <h1 class="text-center">{{evaluation.target.viewname}}</h1>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <p class="text-center">
+            {{evaluation.target.last_name}}{{evaluation.target.first_name}}さんへの<br>
+            評価が完了しました。<br>
+            ご協力ありがとうございました。
+        </p>
+        <p class="text-center">
+            あなたもスキル項目から目標設定を作成して<br>
+            他の人に評価をお願いしてみませんか？<br>
+            <br>
+            <a href="{% url 'index' %}">目標設定シートを作成する</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% endblock %}  
+
+{% block scripts %}
+<script>
+$(function () {
+    $('#next-button').on('click',function(e){
+        data = form2json('#profile-setting-form');
+        document.cookie = 'first_name=' + encodeURIComponent(data['first_name']);
+        document.cookie = 'last_name=' + encodeURIComponent(data['last_name']);
+        document.cookie = 'org_name=' + encodeURIComponent(data['org_name']);
+        document.cookie = 'department_name=' + encodeURIComponent(data['department_name']);
+        document.cookie = 'industory=' + encodeURIComponent(data['industory']);
+        document.cookie = 'industory_opt=' + encodeURIComponent(data['industory_opt']);
+        document.cookie = 'position=' + encodeURIComponent(data['position']);
+        document.cookie = 'job=' + encodeURIComponent(data['job']);
+        document.cookie = 'role=' + encodeURIComponent(data['role']);
+        document.cookie = 'grade=' + encodeURIComponent(data['grade']);
+    });
+    const cookies = document.cookie;
+    const array = cookies.split(';');
+    array.forEach(function(value) {
+      const content = value.split('=');
+      key = '#evaluation-' + content[0].trim();
+      $(key).val(decodeURIComponent(content[1]));
+    })
+
+});
+</script>
+{% endblock %}

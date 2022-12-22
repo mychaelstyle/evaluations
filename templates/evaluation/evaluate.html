@@ -1,0 +1,110 @@
+
+{% extends 'evaluation/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="content-header pb-0">
+    <div class="container-fluid">
+        <h1 class="text-center text-sm">{{evaluation.target.viewname}}</h1>
+        <p class="text-center text-sm pb-0">
+            {{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの評価ページ<br>
+            有効期限 : {{evaluation.due_date}}
+        </p>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                {% if evaluation_item.item.task_evaluation.parent %}
+                    {% if evaluation_item.item.task_evaluation.parent.parent %}
+                        {{evaluation_item.item.task_evaluation.parent.parent.name}} ->
+                    {% endif %}
+                    {{evaluation_item.item.task_evaluation.parent.name}} ->
+                {% endif %}
+                {{evaluation_item.item.task_evaluation.name}}
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="text-center">
+                    {{evaluation.items.count|add:1}}/{{evaluation.target.items.count}}項目
+              </div>
+              <div class="align-items-center">
+                <p class="text-primary text-lg">
+                    {{evaluation.target.last_name}}{{evaluation.target.first_name}}さんは、
+                    {{evaluation_item.item.name}}ことがどれくらいできますか？
+                </p>
+                <p class="text-sm pb-0 mb-0">
+                    スライダーを移動させて５段階で評価してください。
+                    この項目について知見・経験がなく評価できない場合はスキップボタンでスキップできます。
+                </p>
+              </div>
+              <!-- /.d-flex -->
+            </div>
+            <div class="card-footer">
+                {% if messages %}
+                <div class="row">
+                    {% for message in messages %}
+                    <div class="col col-md-12 alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if evaluation_form.errors %}
+                <div class="row">
+                    {% for message in evaluation_form.errors %}
+                    <div class="col col-md-12 alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <form name="evaluate-form" id="evaluate-form" action="{% url 'evaluation' evaluation.uuid %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_id" value="{{evaluation_item.item.id}}">
+                    <input type="hidden" name="skip" id="skip-flag" value="0">
+                    <div class="row p-2 form-group">
+                        <label for="score">{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの能力レベル</label>
+                        <input type="range" class="multi-range w-100 form-group"
+                            min="0" max="100" step="20" id="score" name="score" value="-1">
+                            {% if evaluation_form.score.errors %}
+                                <span class="small text-danger">{{evaluation_form.score.errors}}</span>
+                            {% endif %}
+                    </div>
+                    <div class="row p-2 form-group">
+                        <label for="self_score">あなた自身の能力レベル</label>
+                        <input type="range" class="multi-range w-100 form-group"
+                            min="0" max="100" step="20" id="self_score" name="self_score" value="-1">
+                            {% if evaluation_form.self_score.errors %}
+                                <span class="small text-danger">{{evaluation_form.self_score.errors}}</span>
+                            {% endif %}
+                    </div>
+
+                    <div class="row p-2 form-group">
+                        <button type="button" id="btn-skip" class="btn btn-secondary w-50">スキップ</button>
+                        <button type="submit" id="btn-submit" class="btn btn-primary w-50">次へ</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% endblock %}  
+
+{% block scripts %}
+<script>
+$(function () {
+    $('#btn-skip').click(function(e){
+        $('#skip-flag').val(1);
+        $('#evaluate-form').submit();
+    });
+});
+</script>
+{% endblock %}

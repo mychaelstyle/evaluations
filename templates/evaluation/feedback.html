@@ -1,0 +1,84 @@
+
+{% extends 'evaluation/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <h1 class="text-center">{{evaluation.target.viewname}}</h1>
+        <p class="text-center">{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの評価ページです。</p>
+        <p class="text-center">有効期限 : {{evaluation.due_date}}</p>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <p class="text-center">
+            {{evaluation.target.last_name}}{{evaluation.target.first_name}}さんに<br>
+            フィードバックの<br>
+            コメントがあればお願いします。
+        </p>
+        <form name="feedback-from" id="feedback-form" action="{% url 'evaluation' evaluation.uuid %}" method="post">
+            <div class="row">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% for message in feedback_form.error %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="evaluation-industory">
+                        {% trans 'feedback_notes' %}
+                    </label>
+                    {{feedback_form.feedback_notes}}
+                    {% if feedback_form.feedback_notes.errors %}
+                    <span class="small text-danger">{{feedback_form.feedback_notes.errors}}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="next-button">評価を完了する</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% endblock %}  
+
+{% block scripts %}
+<script>
+$(function () {
+    $('#next-button').on('click',function(e){
+        data = form2json('#profile-setting-form');
+        document.cookie = 'first_name=' + encodeURIComponent(data['first_name']);
+        document.cookie = 'last_name=' + encodeURIComponent(data['last_name']);
+        document.cookie = 'org_name=' + encodeURIComponent(data['org_name']);
+        document.cookie = 'department_name=' + encodeURIComponent(data['department_name']);
+        document.cookie = 'industory=' + encodeURIComponent(data['industory']);
+        document.cookie = 'industory_opt=' + encodeURIComponent(data['industory_opt']);
+        document.cookie = 'position=' + encodeURIComponent(data['position']);
+        document.cookie = 'job=' + encodeURIComponent(data['job']);
+        document.cookie = 'role=' + encodeURIComponent(data['role']);
+        document.cookie = 'grade=' + encodeURIComponent(data['grade']);
+    });
+    const cookies = document.cookie;
+    const array = cookies.split(';');
+    array.forEach(function(value) {
+      const content = value.split('=');
+      key = '#evaluation-' + content[0].trim();
+      $(key).val(decodeURIComponent(content[1]));
+    })
+
+});
+</script>
+{% endblock %}
