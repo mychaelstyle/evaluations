@@ -17,14 +17,17 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.i18n import i18n_patterns
 from competency.views import index
-from target.views import target, add_action
+from target.views import target, add_action, auth_passcode, exit_authenticated, evaluation
 
 urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
     path('api/1.0/competency/', include('competency.urls')),
     path('api/1.0/target/', include('target.urls')),
+    path('target/<str:uuid>/auth', auth_passcode, name="auth-passcode"),
+    path('target/<str:uuid>/exit_edit', exit_authenticated, name="exit-authenticated"),
     path('target/<str:uuid>/addaction', add_action, name="add-action"),
     path('target/<str:uuid>', target, name="show-target"),
+    path('evaluation/<str:uuid>', evaluation, name="evaluation"),
     path('', index, name="index"),
     prefix_default_language=False
 )

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-16 09:26+0900\n"
+"POT-Creation-Date: 2022-12-22 08:34+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,11 +39,11 @@ msgid "command_error_type_is_invalid"
 msgstr ""
 "タイプオプション(--type)はtask|skill|relationのいずれかで指定してください。"
 
-#: competency/models.py:14 target/models.py:81
+#: competency/models.py:14 target/models.py:108
 msgid "created_at"
 msgstr "作成日時"
 
-#: competency/models.py:15 target/models.py:82
+#: competency/models.py:15 target/models.py:109
 msgid "updated_at"
 msgstr "更新日時"
 
@@ -138,11 +138,11 @@ msgstr "タスク検索ワード"
 msgid "searched_count"
 msgstr "検索回数"
 
-#: evaluations/settings.py:139
+#: evaluations/settings.py:140
 msgid "English"
 msgstr "英語"
 
-#: evaluations/settings.py:140
+#: evaluations/settings.py:141
 msgid "Japanese"
 msgstr "日本語"
 
@@ -153,6 +153,77 @@ msgstr "講座や書籍名、業務名と達成目標を記述します"
 #: target/forms.py:33
 msgid "action_url_placeholder"
 msgstr "https://example.com/.."
+
+#: target/forms.py:57
+msgid "relationship_is_required"
+msgstr "関係性を選択してください"
+
+#: target/forms.py:63
+msgid "coworked_is_required"
+msgstr "一緒に働いた経験を選択してください"
+
+#: target/forms.py:71
+msgid "input_if_you_choice_others"
+msgstr "その他を選んだ場合に業界名を入力してください"
+
+#: target/forms.py:72
+msgid "EX_Web_application_engineer"
+msgstr "例）Webアプリケーションエンジニア"
+
+#: target/forms.py:73 target/models.py:125 target/models.py:177
+#: templates/evaluation/profile.html:94
+msgid "first_name"
+msgstr "名"
+
+#: target/forms.py:74 target/models.py:126 target/models.py:178
+#: templates/evaluation/profile.html:84
+msgid "last_name"
+msgstr "姓"
+
+#: target/forms.py:75 templates/evaluation/profile.html:105
+msgid "org_name"
+msgstr "組織名・会社名"
+
+#: target/forms.py:76 target/models.py:133 target/models.py:184
+#: templates/evaluation/profile.html:112
+msgid "department_name"
+msgstr "部門・部署名"
+
+#: target/forms.py:77
+msgid "EX_manager"
+msgstr "例）マネージャー・チームリーダー"
+
+#: target/forms.py:78
+msgid "EX_role"
+msgstr "例）詳細設計とプログラミングの実装"
+
+#: target/forms.py:79
+msgid "EX_url"
+msgstr "http://www.example.com/"
+
+#: target/forms.py:91
+msgid "industory_is_required"
+msgstr "業界・業種を選択してください"
+
+#: target/forms.py:103
+msgid "job_is_required"
+msgstr "職種を入力してください"
+
+#: target/forms.py:109
+msgid "grade_is_required"
+msgstr "グレードを選択してください"
+
+#: target/forms.py:115 target/forms.py:119
+msgid "last_name_is_required"
+msgstr "姓を入力してください"
+
+#: target/forms.py:125 target/forms.py:129
+msgid "first_name_is_required"
+msgstr "名を選択してください"
+
+#: target/forms.py:153 target/forms.py:157
+msgid "role_is_required"
+msgstr "役割を入力してください。"
 
 #: target/models.py:9
 msgid "students"
@@ -214,156 +285,316 @@ msgstr "プレゼンする"
 msgid "learnig_on_a_website"
 msgstr "Webサイトで学習する"
 
-#: target/models.py:92 target/models.py:143
+#: target/models.py:74
+msgid "boss"
+msgstr "この人の上司です"
+
+#: target/models.py:75
+msgid "colleague"
+msgstr "この人の同僚です"
+
+#: target/models.py:76
+msgid "clients"
+msgstr "この人の会社の顧客です"
+
+#: target/models.py:77
+msgid "subordinate"
+msgstr "この人の部下です"
+
+#: target/models.py:78
+msgid "friends"
+msgstr "この人の友達です"
+
+#: target/models.py:82
+msgid "not_coworked"
+msgstr "一緒に働いたことはありません"
+
+#: target/models.py:83
+msgid "one_time_project"
+msgstr "一度同じプロジェクトで一緒に働きました"
+
+#: target/models.py:84
+msgid "several_projects"
+msgstr "いくつかのプロジェクトで一緒に働きました"
+
+#: target/models.py:85
+msgid "several_years"
+msgstr "何年か一緒に仕事をしました"
+
+#: target/models.py:86
+msgid "always"
+msgstr "常に一緒に仕事をしています"
+
+#: target/models.py:90
+msgid "new"
+msgstr "新規"
+
+#: target/models.py:91
+msgid "set_passcode"
+msgstr "パスコード設定済"
+
+#: target/models.py:92
+msgid "set_relationship"
+msgstr "関係性設定済"
+
+#: target/models.py:93
+msgid "set_profile"
+msgstr "プロフィール設定済"
+
+#: target/models.py:94
+msgid "in_progress"
+msgstr "評価中"
+
+#: target/models.py:95
+msgid "set_feedback"
+msgstr "フィードバック記入済"
+
+#: target/models.py:96
+msgid "completed"
+msgstr "完了"
+
+#: target/models.py:119 target/models.py:171
 msgid "UUID"
 msgstr "UUID"
 
-#: target/models.py:93 target/models.py:146
+#: target/models.py:120
+msgid "creator_uuid"
+msgstr "作成者UUID"
+
+#: target/models.py:121 target/models.py:175
+#: templates/evaluation/auth_passcode.html:30
+#: templates/evaluation/welcome.html:37
 msgid "passcode"
 msgstr "パスコード"
 
-#: target/models.py:94
+#: target/models.py:122
 msgid "viewcode"
 msgstr "表示コード"
 
-#: target/models.py:95
+#: target/models.py:123
 msgid "is_open"
 msgstr "公開"
 
-#: target/models.py:96
+#: target/models.py:124
 msgid "target_viewname"
 msgstr "目標設定名"
 
-#: target/models.py:97 target/models.py:147
-msgid "first_name"
-msgstr "名"
-
-#: target/models.py:98 target/models.py:148
-msgid "last_name"
-msgstr "姓"
-
-#: target/models.py:99
+#: target/models.py:127
 msgid "target_date"
 msgstr "目標期限日"
 
-#: target/models.py:100 target/models.py:149
+#: target/models.py:128 target/models.py:179
+#: templates/evaluation/profile.html:72
 msgid "grade"
 msgstr "グレード"
 
-#: target/models.py:101 target/models.py:103 target/models.py:150
-#: target/models.py:152
+#: target/models.py:129 target/models.py:131 target/models.py:180
+#: target/models.py:182
 msgid "organization_name"
 msgstr "組織名"
 
-#: target/models.py:102 target/models.py:151
+#: target/models.py:130 target/models.py:181
+#: templates/evaluation/profile.html:52
 msgid "industry_optional"
 msgstr "業界・業種その他"
 
-#: target/models.py:104 target/models.py:153
+#: target/models.py:132 target/models.py:183
+#: templates/evaluation/profile.html:139
 msgid "organization_url"
 msgstr "組織URL"
 
-#: target/models.py:105 target/models.py:154
-msgid "department_name"
-msgstr "部門・部署名"
-
-#: target/models.py:106 target/models.py:107 target/models.py:108
-#: target/models.py:155 target/models.py:156 target/models.py:157
+#: target/models.py:134 target/models.py:135 target/models.py:136
+#: target/models.py:185 target/models.py:186 target/models.py:187
+#: templates/evaluation/profile.html:129
 msgid "role"
 msgstr "役割"
 
-#: target/models.py:109 target/models.py:133
+#: target/models.py:137 target/models.py:161
 msgid "description"
 msgstr "概要"
 
-#: target/models.py:117 target/models.py:144
+#: target/models.py:145 target/models.py:173
 msgid "target"
 msgstr "目標"
 
-#: target/models.py:119
+#: target/models.py:147
 msgid "task_evaluation_item"
 msgstr "タスク評価項目"
 
-#: target/models.py:121
+#: target/models.py:149
 msgid "self_evaluation"
 msgstr "自己評価"
 
-#: target/models.py:129 target/models.py:168
+#: target/models.py:157 target/models.py:204
 msgid "target_item"
 msgstr "目標項目"
 
-#: target/models.py:131
+#: target/models.py:159
 msgid "user_viewname"
 msgstr "表示名"
 
-#: target/models.py:132
+#: target/models.py:160
 msgid "action_type"
 msgstr "行動タイプ"
 
-#: target/models.py:134
+#: target/models.py:162
 msgid "url"
 msgstr "URL"
 
-#: target/models.py:135
+#: target/models.py:163
 msgid "progress"
 msgstr "進捗"
 
-#: target/models.py:158
+#: target/models.py:172
+msgid "evaluator_uuid"
+msgstr "評価者UUID"
+
+#: target/models.py:176
+msgid "status"
+msgstr "状態"
+
+#: target/models.py:188
 msgid "feedback_notes"
 msgstr "フィードバック"
 
-#: target/models.py:166
+#: target/models.py:189 templates/evaluation/relationship.html:38
+msgid "relationship"
+msgstr "関係性"
+
+#: target/models.py:190 templates/evaluation/relationship.html:45
+msgid "coworked"
+msgstr "一緒に働いた経験"
+
+#: target/models.py:191
+msgid "due_date"
+msgstr "期限日"
+
+#: target/models.py:192 target/models.py:208
+msgid "remote_address"
+msgstr "IPアドレス"
+
+#: target/models.py:193 target/models.py:194 target/models.py:209
+#: target/models.py:210
+msgid "remote_host"
+msgstr "リモートホスト"
+
+#: target/models.py:202
 msgid "evaluation"
 msgstr "評価"
 
-#: target/models.py:170
+#: target/models.py:206
 msgid "evaluation_value"
 msgstr "評価値"
 
-#: target/models.py:171
+#: target/models.py:207
 msgid "self_evaluation_value"
 msgstr "自己評価値"
 
-#: target/views/__init__.py:71 target/views/api.py:96 target/views/api.py:135
-msgid "passcode_is_required"
-msgstr "パスコード入力欄に設定したパスコードを入力してください"
+#: target/models.py:217
+msgid "user_uuid"
+msgstr "ユーザーUUID"
 
-#: target/views/__init__.py:74 target/views/api.py:98 target/views/api.py:137
+#: target/models.py:218
+msgid "related_uuid"
+msgstr "関連UUID"
+
+#: target/services/__init__.py:53 target/services/__init__.py:61
+#: target/views/__init__.py:149
 msgid "passcode_is_invalid"
 msgstr "パスコードが間違っています"
 
-#: target/views/api.py:34
+#: target/services/__init__.py:58 target/views/__init__.py:97
+#: target/views/__init__.py:146 target/views/api.py:111 target/views/api.py:155
+msgid "passcode_is_required"
+msgstr "パスコード入力欄に設定したパスコードを入力してください"
+
+#: target/views/__init__.py:120
+msgid "passcode_is_required_more_than_4chars"
+msgstr "パスコードは4文字以上で入力してください"
+
+#: target/views/api.py:39
 msgid "no_selected_items"
 msgstr "項目が選択されていません"
 
-#: target/views/api.py:38
+#: target/views/api.py:43
 msgid "select_more_than_3_items"
 msgstr "項目は３つ以上選択してください"
 
-#: target/views/api.py:40
+#: target/views/api.py:45
 msgid "select_less_than_10_items"
 msgstr "項目は10つまで設定できます"
 
-#: target/views/api.py:45
+#: target/views/api.py:50
 msgid "invalid_selected_items"
 msgstr "選択された項目のいずれかが正しくありません"
 
-#: target/views/api.py:49 target/views/api.py:107 target/views/api.py:142
+#: target/views/api.py:54 target/views/api.py:122 target/views/api.py:166
 msgid "validation_error"
 msgstr "入力内容を確認してください"
 
-#: target/views/api.py:100
+#: target/views/api.py:114
 msgid "self_evaluation_is_required"
 msgstr "自己評価の値を入力してください"
 
-#: target/views/api.py:102
+#: target/views/api.py:116
 msgid "self_evaluation_must_be_decimal"
 msgstr "自己評価値は自然数で入力してください"
 
-#: target/views/api.py:104
+#: target/views/api.py:118
 msgid "self_evaluation_must_be_0_to_100"
 msgstr "自己評価値は0-100の値で入力してください"
 
-#: templates/simple.html:10 templates/simple.html:31 templates/target.html:11
+#: target/views/api.py:158
+msgid "progress_is_required"
+msgstr "進捗率を入力してください。"
+
+#: target/views/api.py:160
+msgid "progress_must_be_decimal"
+msgstr "進捗率は自然数で入力してください"
+
+#: target/views/api.py:162
+msgid "progress_must_be_0_to_100"
+msgstr "進捗率は0-100の値で入力してください"
+
+#: target/views/api.py:189
+msgid "authentication_required"
+msgstr "認証が必要です"
+
+#: templates/evaluation/base.html:13 templates/simple.html:10
+#: templates/simple.html:40 templates/target.html:13
 msgid "site_title"
-msgstr "評価・目標設定ビルダー"
+msgstr "スキルアップ目標設定サポートツール"
+
+#: templates/evaluation/profile.html:43
+msgid "industory"
+msgstr "業界・業種"
+
+#: templates/evaluation/profile.html:44 templates/evaluation/profile.html:63
+#: templates/evaluation/profile.html:73 templates/evaluation/profile.html:85
+#: templates/evaluation/profile.html:95 templates/evaluation/profile.html:130
+msgid "required"
+msgstr "必須"
+
+#: templates/evaluation/profile.html:62
+msgid "job"
+msgstr "職種"
+
+#: templates/evaluation/profile.html:121
+msgid "position"
+msgstr "肩書き"
+
+#: templates/index.html:15
+msgid "Attention"
+msgstr "注意事項"
+
+#: templates/index.html:47
+msgid "Howtouse"
+msgstr "使い方"
+
+#: templates/target.html:307
+msgid "evaluation_request"
+msgstr "評価依頼"
+
+#: templates/target.html:348
+msgid "create_action"
+msgstr "目標に対する行動目標を作成"

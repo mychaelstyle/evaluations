@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'evaluations.context_processors.site_common_texts'
             ],
         },
     },
@@ -161,5 +162,6 @@ CACHES = {
         'LOCATION': 'django_cache',
     }
 }
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 

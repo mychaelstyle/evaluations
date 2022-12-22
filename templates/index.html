@@ -4,50 +4,86 @@
 {% load mathfilters %}
 {% block content %}
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <div class="content-header show" id="howtouse">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 pull-center mx-auto p-4">
-                    <h1 class="col-lg-12 pull-center mx-auto text-center">目標設定サポート検索</h1>
+          <div class="row" style="display:flex;flex-wrap:wrap;">
+            <div class="col col-md-6" style="display:flex;flex-wrap:wrap;">
+              <div class="card card-default">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {% trans 'Attention' %}
+                  </h3>
                 </div>
-            </div>
-            <div class="row pull-center mx-auto">
-                <div class="col-md-2"></div>
-                <div class="col-md-8 small">
-                    <ul class="list-group">
-                        <li class="list-group-item">コンピテンシー、業務タスクを検索して、評価項目や必要なスキル・知識を探し、目標設定や評価項目の作成にご利用いただけるツールです。
-                            項目を選択して目標設定シートを作成できます。ご利用は無料です。</li>
-                        <li class="list-group-item">
-                            追加ボタンを押して目標タイトルを入力することで、UUIDを伴うユニークなURLが生成され、目標設定シートを保存することができます。目標設定シートのURLの拡散や漏洩は自己責任の範疇にて同意いただきご利用ください。
-                        </li>
-                        <li class="list-group-item">現在<a href="https://www.ipa.go.jp/" target="_blank">IPA</a>が公開している
-                            「<a href="https://www.ipa.go.jp/jinzai/hrd/i_competency_dictionary/" target="_blank">iコンピテンシーディクショナリ</a>」といくつかの独自スキルのデータベースをご利用いただけます。
-                            他に利用したいコンピテンシーフレームワークやスキルフレームワークやおすすめがあればご一報ください。
-                        </li>
-                    </ul>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <ul class="list-group small">
+                    <li class="list-group-item">
+                      デジタル人材育成・デジタル関連スキルアップの有用なコンピテンシー、業務タスク・スキル・知識を検索して、評価項目や必要なスキル・知識を探し、目標設定や評価項目の作成にご利用いただけるツールです。
+                    </li>
+                    <li class="list-group-item">
+                      個人的なスキルアップ目標の設定、どんな知識やスキルが必要かの確認だけでなく、部下や社員の育成時の目標設定の補助としてご活用ください。
+                    </li>
+                    <li class="list-group-item">
+                      現在<a href="https://www.ipa.go.jp/" target="_blank">IPA</a>が公開している
+                      「<a href="https://www.ipa.go.jp/jinzai/hrd/i_competency_dictionary/" target="_blank">iコンピテンシーディクショナリ</a>」と
+                      いくつかの独自スキルのデータベースをご利用いただけます。
+                    </li>
+                </ul>
+
+                  <div class="alert alert-warning alert-dismissible small">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-exclamation-triangle"></i> ご注意</h5>
+                    ご利用は無料です。目標設定シートのURLは自己責任で管理してください。拡散や漏洩の責任は負いかねます。本サイトでURLを同意なく公開することはありません。
+                  </div>
                 </div>
-                <div class="col-md-2"></div>
+                <!-- /.card-body -->
+              </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12 pull-center p-2">
-                    <!-- SEARCH FORM -->
-                    <form name="search-form" action="#" method="GET" class="form-inline" onsubmit="return false;">
-                        <div class="input-group input-group-lg col-lg-8 mx-auto">
-                            <input class="form-control form-control-lg" type="search" name="q" id="search-query" placeholder="Search" aria-label="Search">
-                            <div class="input-group-append">
-                                <button class="btn search-exec" type="button">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+            <div class="col col-md-6" style="display:flex;flex-wrap:wrap;">
+              <div class="card card-default">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="fa-solid fa-question"></i> {% trans 'Howtouse' %}
+                  </h3>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 pull-center mx-auto text-center p-3">
-                    <p>件数：<span id="total-count"></span>件</p>
+                <!-- /.card-header -->
+                <div class="card-body small">
+                  <ol>
+                    <li>
+                      ヘッダーの検索欄にスペース区切りで検索したい単語を入力して、目標設定に使いたい項目を絞り込みましょう。業務名や職種、知識名やスキル名などで絞り込めます。
+                    </li>
+                    <li>
+                      項目の右に表示されている「選択」ボタンをクリックして評価項目を選択してください。
+                      選択済みの項目は右上のクリップアイコンをクリックするとスライドバーが表示され確認することができます。
+                    </li>
+                    <li>
+                      スライドバーから、目標タイトル他必要項目を入力して「目標設定シートを作成する」ボタンをクリックすることで目標設定を保存することができます。
+                    </li>
+                    <li>
+                      目標設定シートを保存するとUUIDを伴うユニークなURLが生成され、URLを知っている人だけがアクセスすることができるようになります。
+                    </li>
+                    <li>
+                      目標設定シートを作成したら自己評価を記録し、目標に対して起こすアクションを登録しましょう。
+                      シートでは、関連するスキル・知識の単語を見ることができます。教材を探す検索ワードなどにしてください。
+                    </li>
+                    <li>
+                      URLを上長やチームメンバーと共有して他者評価をお願いすることができます。振り返りやフィードバックにご活用ください。
+                    </li>
+                  </ol>
                 </div>
+                <!-- /.card-body -->
+              </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col col-md-12 text-right small pr-2">
+              <a href="#" data-toggle="collapse"
+              data-target="#howtouse" aria-controls="howtouse" aria-expanded="true">
+                <i class="fa-solid fa-square-minus"></i> 説明を折りたたむ
+              </a>
+            </div>
+          </div>
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -55,8 +91,11 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <div class="row" id="search-results">
-            </div>
+          <div class="col-lg-12 pull-center mx-auto text-center p-1">
+            <p>件数：<span id="total-count"></span>件</p>
+          </div>
+          <div class="row" id="search-results">
+          </div>
         </div>
     </div>
     <!-- /.Main content -->
@@ -169,15 +208,12 @@
   <div class="col-md-4" id="template-card" style="displpay:noe;">
     <div class="card card-primary card-outline">
         <div class="card-header">
-            <h5 class="card-title m-0"></h5>
-            <div class="card-tools">
-              <div class="task-tree small"></div>
-            </div>
+          <div class="task-tree small"></div>
+          <h5 class="card-title m-0"></h5>
         </div>
-        <div class="card-body p-0">
-            <div class="card-text"></div>
+      <div class="card-body overflow-auto p-0" style="height: 250px;display:block;">
             <table class="table table-striped table-valign-middle table_sticky w-100">
-                <tbody class="task-items overflow-auto" style="display:block; height: 250px;">
+                <tbody class="task-items w-100">
                 </tbody>
             </table>
         </div>
@@ -232,7 +268,7 @@ var get_page = function(page) {
                 str = item.name.replace(LAST_WORDS,"<span class='text-danger'>"+LAST_WORDS+"</span>");
                 tr = "<tr><td class='small'>" + str
                     + "</td><td class='small'><button class='btn btn-primary btn-sm text-nowrap btn-item-select' data-id='"
-                    + item.code + "' id='select-btn-" + item.id + "' task-code='" + taskcode + "'>追加</button></td></tr>";
+                    + item.code + "' id='select-btn-" + item.id + "' task-code='" + taskcode + "'>選択</button></td></tr>";
                 li = '<li class="nav-item"><a href="#" class="nav-link">'+str+' <span class="float-right badge bg-primary">追加</span></a></li>';
                 $('#'+idstr+' .task-items').append(tr);
                 $('#'+idstr+' .task-evaluation-items').append(li);
@@ -252,6 +288,11 @@ var get_page = function(page) {
 var search = function(query) {
     if( LAST_WORDS != "" && query == LAST_WORDS ){
         return;
+    }
+    if( query != "" ){
+      const address = new URL(window.location);
+      address.searchParams.set('q', query);
+      history.replaceState("", "", address.toString());
     }
     $('#search-results').empty();
     ALL_TASKS = {};
@@ -302,7 +343,9 @@ var add_select_action = function(id){
 }
 $(function () {
     $('#template-card').hide();
-    search(LAST_WORDS);
+    const address = new URL(window.location);
+    $('#search-query').val(address.searchParams.get('q'));
+    search($('#search-query').val());
     $('#search-query').keypress(function(e){
         if (e.keyCode == 13) {
             search($(this).val());
