@@ -4,6 +4,7 @@ from django.db.models import QuerySet, Model
 from django.db.models.fields.related_descriptors import create_reverse_many_to_one_manager
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from uuid import UUID
 
 import datetime
 import inspect
@@ -74,7 +75,7 @@ class CommonJsonResponse:
                 d.append(rd)
             self.data = d
         elif isinstance(data,Model):
-            self.data = model_to_dict(data)
+            self.data = self.model_to_dict(data)
         else:
             self.data = data
 
@@ -93,6 +94,8 @@ class CommonJsonResponse:
                 ret[m[0]] = m[1]
             elif isinstance(m[1],Model):
                 ret[m[0]] = self.model_to_dict(m[1])
+            elif isinstance(m[1],UUID):
+                ret[m[0]] = str(m[1])
         return ret
 
     def is_error(self):
@@ -117,3 +120,18 @@ class CommonJsonResponse:
         self.body['csrf_token'] = get_token(self.request)
         self.body['data'] = self.data
         return JsonResponse(self.body)
+
+def get_remote_address(request):
+    """リモートIPを取得
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    forwarded_addresses = request.META.get('HTTP_X_FORWARDED_FOR')
+    if forwarded_addresses:
+        return forwarded_addresses.split(',')[0]
+    else:
+        return request.META.get('REMOTE_ADDR')

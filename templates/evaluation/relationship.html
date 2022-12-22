@@ -1,0 +1,63 @@
+
+{% extends 'evaluation/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <h1 class="text-center">{{evaluation.target.viewname}}</h1>
+        <p class="text-center">{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの評価ページです。</p>
+        <p class="text-center">有効期限 : {{evaluation.due_date}}</p>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <p class="text-center">
+            最初にあなたは、{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんにとって<br>
+            どういう関係か教えてください。
+        </p>
+        <form name="passcode-setting" action="{% url 'evaluation' evaluation.uuid %}" method="post">
+            <div class="row">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% for message in relationship_form.error %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="evaluation-relationship">{% trans 'relationship' %}</label>
+                {{relationship_form.relationship}}
+                {% if relationship_form.relationship.errors %}
+                <span class="small text-danger">{{relationship_form.relationship.errors}}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="evaluation-coworked">{% trans 'coworked' %}</label>
+                {{relationship_form.coworked}}
+                {% if relationship_form.coworked.errors %}
+                <span class="small text-danger">{{relationship_form.coworked.errors}}</span>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">次へ</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% endblock %}  
+
+{% block scripts %}
+<script>
+</script>
+{% endblock %}
