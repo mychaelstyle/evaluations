@@ -127,22 +127,22 @@
                 </div>
                 {% endif %}
                 <div class="row">
-                    <div class="col col-md-4 text-left text-nowrap">
+                    <div class="col col-md-4 text-left text-nowrap pb-3" style="min-width:350px;">
                         作成：{{target.created_at}}
                     </div>
-                    <div class="col col-md-8 text-right pb-3">
+                    <div class="col col-md-8 text-right pb-3" style="min-width:350px;">
                         {% if authenticated %}
                         <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
                             {% csrf_token %}
-                            <button class="btn btn-success btn-sm btn-request-evaluation" data-toggle="modal" data-target="#modal-request-evaluation" type="button">
-                                <i class="fa-solid fa-user"></i> 新規に評価を依頼する
+                            <button class="btn btn-success btn-sm btn-request-evaluation" type="button">
+                                <i class="fa-solid fa-user"></i> 新規に評価を依頼
                             </button>
 
                             <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create-action" type="button">
-                                <i class="fa fa-plus-square"></i> 目標に対する行動目標を追加
+                                <i class="fa fa-plus-square"></i> 行動目標を追加
                             </button>
 
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了する</button>
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
                         </form>
                         {% else %}
                         <form name="auth-passcode" method="post" action="{% url 'auth-passcode' target.uuid %}">
@@ -257,6 +257,69 @@
                 </div>
                 {% endfor %}
                 <hr>
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                          <h3 class="card-title">作成済みの評価依頼</h3>
+                          <div class="card-tools">
+                            {{target.evaluations.count}}件
+                          </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                          
+                          <table class="table table-striped">
+                            <tbody>
+                                {% for evaluation in target.evaluations.all %}
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-md-7">
+                                                {% if evaluation.status == 100 %}
+                                                    {{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}
+                                                {% else %}
+                                                <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
+                                                    <input type="text" name="evaluation_url" class="form-control"
+                                                        value="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
+                                                    <div class="input-group-append">
+                                                        <button class="input-group-text btn-copy-evaluation-url"
+                                                            evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col col-md-2 text-nowrap">
+                                                {{evaluation.due_date}}
+                                            </div>
+                                            <div class="col col-md-2">
+                                                <div class="progress progress-xs">
+                                                    <div class="progress-bar progress-bar-danger" style="width: {{evaluation.status}}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col col-md-1">
+                                                {% if evaluation.status == 100 %}
+                                                <span class="badge bg-secondary">{{evaluation.get_status_display}}</span>
+                                                {% elif evaluation.status == 0 %}
+                                                <span class="badge bg-primary">未使用</span>
+                                                <button type="button" class="badge bg-success btn-show-request-qr-code"
+                                                    evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}"
+                                                    >QRコード</button>
+                                                {% else %}
+                                                <span class="badge bg-success">評価中</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- /.card-body -->
+                      </div>
+                </div>
+                <hr>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-primary">
@@ -327,8 +390,17 @@
             <div class="row d-flex">
                 <div class="col col-md-12  d-flex align-items-center justify-content-center">
                     <div class="mx-auto">
-                        <input type="text" name="evaluation_url" id="evaluation-url" size="30" class="form-group"
-                            value="https://example.com/" disabled="disabled">
+                        <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
+                            <input type="text" name="evaluation_url" class="form-control" id="evaluation-url"
+                                value="https://example.com/">
+                            <div class="input-group-append">
+                                <button class="input-group-text btn-copy-evaluation-url"
+                                    id="new-evaluation-url"
+                                    evaluation-url="">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -416,12 +488,28 @@
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
 {% if authenticated %}
-var change_qrcode = function(){
-    url = $('#evaluation-url').val();
+var show_qr_modal = function(url){
+    $("#evaluation-url").val(url);
+    $("#new-evaluation-url").removeAttr("evaluation-url");
+    $("#new-evaluation-url").attr("evaluation-url",url);
     $("#evaluation-url-qrcode").text("");
     new QRCode(document.getElementById("evaluation-url-qrcode"), url);
+    $('#modal-request-evaluation').modal('show');
 }
 $(function(){
+    $('.btn-copy-evaluation-url').click(function(e){
+        text = $(this).attr("evaluation-url");
+        if (navigator.clipboard == undefined) {
+            window.clipboardData.setData("Text", text);
+        } else {
+            navigator.clipboard.writeText(text);
+        }
+        alert('コピーしました！' + '\n' + text)
+    });
+    $('.btn-show-request-qr-code').click(function(e){
+        url = $(this).attr('evaluation-url');
+        show_qr_modal(url);
+    });
     $('.btn-request-evaluation').click(function(e){
         url = '{% url "request-evaluation" '000' %}';
         url = url.replace('000','{{target.uuid}}');
@@ -433,7 +521,9 @@ $(function(){
                 evaluation_url = '{% url "evaluation" '0000' %}';
                 evaluation_url = evaluation_url.replace('0000',data.data.uuid);
                 $('#evaluation-url').val('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
-                change_qrcode();
+                $('#new-evaluation-url').removeAttr("evaluation-url");
+                $('#new-evaluation-url').attr("evaluation-url",'{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
+                show_qr_modal('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
             } else {
             }
         },function(XMLHttpRequest, textStatus, errorThrown){
@@ -498,11 +588,6 @@ $(function(){
             alert(errorThrown);
         });
     });
-
-    $("#evaluation-url").change(function(e){
-        change_qrcode();
-    });
-    change_qrcode();
 });
 {% endif %}
 </script>
