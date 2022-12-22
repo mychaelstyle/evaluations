@@ -1,0 +1,46 @@
+
+{% extends 'evaluation/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <h1 class="text-center">{{evaluation.target.viewname}}</h1>
+        <p class="text-center">{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの評価ページです。</p>
+        <p class="text-center">有効期限 : {{evaluation.due_date}}</p>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <p class="text-center">評価を再開するにはパスコードを入力して認証してください。</p>
+        <form name="passcode-setting" action="{% url 'evaluation' evaluation.uuid %}" method="post">
+            {% if messages %}
+            <div class="row">
+                {% for message in messages %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="passcord">{% trans 'passcode' %}</label>
+                <input type="password" class="form-control" name="passcord" id="passcode" size="20" value=""
+                    placeholder="半角英数字大文字小文字で入力">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">評価を再開する</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% endblock %}  
+
+{% block scripts %}
+<script>
+</script>
+{% endblock %}

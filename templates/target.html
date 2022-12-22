@@ -127,17 +127,22 @@
                 </div>
                 {% endif %}
                 <div class="row">
-                    <div class="col col-md-6 text-left text-nowrap">
+                    <div class="col col-md-4 text-left text-nowrap">
                         作成：{{target.created_at}}
                     </div>
-                    <div class="col col-md-6 text-right text-nowrap pb-3">
+                    <div class="col col-md-8 text-right pb-3">
                         {% if authenticated %}
                         <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
                             {% csrf_token %}
+                            <button class="btn btn-success btn-sm btn-request-evaluation" data-toggle="modal" data-target="#modal-request-evaluation" type="button">
+                                <i class="fa-solid fa-user"></i> 新規に評価を依頼する
+                            </button>
+
                             <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create-action" type="button">
                                 <i class="fa fa-plus-square"></i> 目標に対する行動目標を追加
-                            </button>     
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
+                            </button>
+
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了する</button>
                         </form>
                         {% else %}
                         <form name="auth-passcode" method="post" action="{% url 'auth-passcode' target.uuid %}">
@@ -295,6 +300,47 @@
 <!-- /. wrapper -->
 
 {% if authenticated %}
+<div class="modal" id="modal-request-evaluation">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{% trans 'evaluation_request' %}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row d-flex">
+                <div class="col col-md-12  d-flex align-items-center justify-content-center p-3">
+                    <p>
+                        ユニークな評価用URLを発行しました。URLをコピーして評価を依頼したい人に送信するかQRコードを見せて評価してもらいましょう。
+                        評価用URLの有効期限は14日間です。
+                    </p>
+                </div>
+            </div>
+            <div class="row d-flex">
+                <div class="col col-md-12  d-flex align-items-center justify-content-center p-3">
+                    <div id="evaluation-url-qrcode" class="mx-auto">
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex">
+                <div class="col col-md-12  d-flex align-items-center justify-content-center">
+                    <div class="mx-auto">
+                        <input type="text" name="evaluation_url" id="evaluation-url" size="30" class="form-group"
+                            value="https://example.com/" disabled="disabled">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">とじる</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- ./modal-request-evaluation -->
+
 <div class="modal" id="modal-create-action">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -342,6 +388,9 @@
         </form> 
     </div>
 </div>
+<!-- ./modal-create-action -->
+
+
 {% endif %}
 <!-- REQUIRED SCRIPTS -->
 
@@ -360,12 +409,37 @@
 <script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
+<!-- qrcode.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <!-- common -->
 <script src="{% static 'js/common.js' %}"></script>
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
 {% if authenticated %}
+var change_qrcode = function(){
+    url = $('#evaluation-url').val();
+    $("#evaluation-url-qrcode").text("");
+    new QRCode(document.getElementById("evaluation-url-qrcode"), url);
+}
 $(function(){
+    $('.btn-request-evaluation').click(function(e){
+        url = '{% url "request-evaluation" '000' %}';
+        url = url.replace('000','{{target.uuid}}');
+        console.log(url);
+        data = {}
+        data2api(url,'post', data, function(data){
+            console.log(data);
+            if(data['result'] == 'OK'){
+                evaluation_url = '{% url "evaluation" '0000' %}';
+                evaluation_url = evaluation_url.replace('0000',data.data.uuid);
+                $('#evaluation-url').val('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
+                change_qrcode();
+            } else {
+            }
+        },function(XMLHttpRequest, textStatus, errorThrown){
+            alert(errorThrown);
+        });
+    });
     $('.self-evaluation').change(function(e){
         relationId = $(this).attr('evaluation-id');
         q = '#self-evaluation-val-' + relationId;
@@ -425,6 +499,10 @@ $(function(){
         });
     });
 
+    $("#evaluation-url").change(function(e){
+        change_qrcode();
+    });
+    change_qrcode();
 });
 {% endif %}
 </script>

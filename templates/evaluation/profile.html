@@ -1,0 +1,180 @@
+
+{% extends 'evaluation/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <h1 class="text-center">{{evaluation.target.viewname}}</h1>
+        <p class="text-center">{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの評価ページです。</p>
+        <p class="text-center">有効期限 : {{evaluation.due_date}}</p>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <p class="text-center">
+            あなたのプロフィールを教えてください。<br>
+            評価対象の相手にしか閲覧されません。<br>
+            あなたが評価したことは伝わりますが、<br>
+            あなたがどんな評価をしたのかは<br>
+            コメント以外相手にはわかりません。<br>
+        </p>
+        <form name="profile-setting" id="profile-setting-form" action="{% url 'evaluation' evaluation.uuid %}" method="post">
+            <div class="row">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% for message in profile_form.error %}
+                <div class="col col-md-12 alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="evaluation-industory">
+                        {% trans 'industory' %}
+                        <span class="badge badge-danger">{% trans "required" %}</span>
+                    </label>
+                    {{profile_form.industory}}
+                    {% if profile_form.industory.errors %}
+                    <span class="small text-danger">{{profile_form.industory.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="evaluation-industry_opt">{% trans 'industry_optional' %}</label>
+                    {{profile_form.industory_opt}}
+                    {% if profile_form.industory_opt.errors %}
+                    <span class="small text-danger">{{profile_form.industory_opt.errors}}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="evaluation-job">
+                        {% trans 'job' %}
+                        <span class="badge badge-danger">{% trans "required" %}</span>
+                    </label>
+                    {{profile_form.job}}
+                    {% if profile_form.job.errors %}
+                    <span class="small text-danger">{{profile_form.job.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="evaluation-grade">
+                        {% trans 'grade' %}
+                        <span class="badge badge-danger">{% trans "required" %}</span>
+                    </label>
+                    {{profile_form.grade}}
+                    {% if profile_form.grade.errors %}
+                    <span class="small text-danger">{{profile_form.grade.errors}}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="evaluation-last_name">
+                        {% trans 'last_name' %}
+                        <span class="badge badge-danger">{% trans "required" %}</span>
+                    </label>
+                    {{profile_form.last_name}}
+                    {% if profile_form.last_name.errors %}
+                    <span class="small text-danger">{{profile_form.last_name.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="evaluation-first_name">
+                        {% trans 'first_name' %}
+                        <span class="badge badge-danger">{% trans "required" %}</span>
+                    </label>
+                    {{profile_form.first_name}}
+                    {% if profile_form.first_name.errors %}
+                    <span class="small text-danger">{{profile_form.first_name.errors}}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="evaluation-org_name">{% trans 'org_name' %}</label>
+                    {{profile_form.org_name}}
+                    {% if profile_form.org_name.errors %}
+                    <span class="small text-danger">{{profile_form.org_name.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="evaluation-department_name">{% trans 'department_name' %}</label>
+                    {{profile_form.department_name}}
+                    {% if profile_form.department_name.errors %}
+                    <span class="small text-danger">{{profile_form.department_name.errors}}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="evaluation-position">{% trans 'position' %}</label>
+                    {{profile_form.position}}
+                    {% if profile_form.position.errors %}
+                    <span class="small text-danger">{{profile_form.position.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="evaluation-role">
+                        {% trans 'role' %}
+                        <span class="badge badge-danger">{% trans "required" %}</span>
+                    </label>
+                    {{profile_form.role}}
+                    {% if profile_form.role.errors %}
+                    <span class="small text-danger">{{profile_form.role.errors}}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="evaluation-org_url">{% trans 'organization_url' %}</label>
+                {{profile_form.org_url}}
+                {% if profile_form.org_url.errors %}
+                <span class="small text-danger">{{profile_form.org_url.errors}}</span>
+                {% endif %}
+            </div>
+        <button type="submit" class="btn btn-primary w-100" id="next-button">次へ</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% endblock %}  
+
+{% block scripts %}
+<script>
+$(function () {
+    $('#next-button').on('click',function(e){
+        data = form2json('#profile-setting-form');
+        document.cookie = 'first_name=' + encodeURIComponent(data['first_name']);
+        document.cookie = 'last_name=' + encodeURIComponent(data['last_name']);
+        document.cookie = 'org_name=' + encodeURIComponent(data['org_name']);
+        document.cookie = 'department_name=' + encodeURIComponent(data['department_name']);
+        document.cookie = 'industory=' + encodeURIComponent(data['industory']);
+        document.cookie = 'industory_opt=' + encodeURIComponent(data['industory_opt']);
+        document.cookie = 'position=' + encodeURIComponent(data['position']);
+        document.cookie = 'job=' + encodeURIComponent(data['job']);
+        document.cookie = 'role=' + encodeURIComponent(data['role']);
+        document.cookie = 'grade=' + encodeURIComponent(data['grade']);
+    });
+    const cookies = document.cookie;
+    const array = cookies.split(';');
+    array.forEach(function(value) {
+      const content = value.split('=');
+      key = '#evaluation-' + content[0].trim();
+      $(key).val(decodeURIComponent(content[1]));
+    })
+
+});
+</script>
+{% endblock %}

@@ -1,10 +1,10 @@
 from django.http import Http404
 from django.forms import ValidationError
 from django.utils.translation import gettext as _
-
 from django.contrib.auth.hashers import check_password
+from django.db.models import Q
 
-from ..models import Target
+from ..models import Target, Anonymous
 
 AUTH_TARGETS_SESSION = 'authenticated_targets'
 
@@ -63,6 +63,13 @@ def authenticate(request, uuid:str, passcode:str) -> Target:
     authed_targets = request.session.get(AUTH_TARGETS_SESSION,[])
     authed_targets.append(uuid)
     request.session[AUTH_TARGETS_SESSION] = authed_targets
+    # 目標設定のcreator_idを確認して関連付け
+    creator_id = get_anonymous(request)
+    if target.creator_id is None:
+        target.creator_id = creator_id
+        target.save()
+    elif str(target.creator_id) != creator_id:
+        relate_anonymous(target.creator_id, creator_id)
     return target
 
 def remove_auth(request, uuid):
@@ -78,3 +85,35 @@ def remove_auth(request, uuid):
         if uuid != authed_uuid:
             authed_news.append(authed_uuid)
     request.session[AUTH_TARGETS_SESSION] = authed_news
+
+def get_anonymous(request):
+    """匿名ユーザーのUUIDを取得
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    anonymous_uuid = request.COOKIES.get('euuid',None)
+    if anonymous_uuid is None:
+        anonymous = Anonymous()
+        anonymous.save()
+        return str(anonymous.uuid)
+    else:
+        anonymous = Anonymous.objects.filter(Q(uuid=anonymous_uuid) | Q(related=anonymous_uuid)).order_by("id").first()
+        if anonymous is not None:
+            return str(anonymous.uuid)
+        else:
+            anonymous = Anonymous()
+            anonymous.save()
+            return str(anonymous.uuid)
+
+def relate_anonymous(s_uuid, d_uuid):
+    anonymous = Anonymous.objects.filter(uuid=d_uuid).order_by("id").first()
+    if anonymous is not None:
+        anonymous.related = s_uuid
+        anonymous.save()
+        return str(anonymous.uuid)
+    else:
+        return None
