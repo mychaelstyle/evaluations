@@ -77,7 +77,9 @@ def create(request):
                 target_dict['items'] = item_objects
                 print(target.uuid)
                 res.set_data(target_dict)
-                return res.get().set_cookie("euuid",str(creator_id))
+                response = res.get()
+                response.set_cookie("euuid",str(creator_id))
+                return response
         except Exception as e:
             res.add_message(e)
             return res.get()
@@ -126,7 +128,9 @@ def self_evaluation(request,id):
         item.save()
         
         res.set_data(item)
-        return res.get().set_cookie('euuid',item.target.creator_id)
+        response = res.get()
+        response.set_cookie('euuid',item.target.creator_id)
+        return response
 
 def action_progress(request,id):
     """自己評価の更新
