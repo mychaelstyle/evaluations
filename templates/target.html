@@ -52,7 +52,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-sm-6 pt-2 d-none d-sm-block">
+                                <div id="top-qr-code" class="text-center p-1"
+                                    style="background-color:#FFFFFF;border:solid 3px #ffffff;width:105px;heght:100px;"></div>
+                            </div>
+                            <div class="col-sm-6">
                                 <h5 class="widget-user-desc text-right">
                                     {% if target.industory %}{{target.get_industory_display}}{% endif %}
                                     {% if target.industory_opt %}{{target.industory_opt}}{% endif %}
@@ -62,11 +66,9 @@
                                     {% if target.role %}{{target.role}}{% endif %}
                                     {% if target.grade %}{{target.get_grade_display}}{% endif %}
                                 </h5>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-12">
-                                {{target.description}}
+                                <div class="text-right" style="color:#ffffff;">
+                                    {{target.description}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -487,6 +489,16 @@
 <script src="{% static 'js/common.js' %}"></script>
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
+$(function(){
+    new QRCode(document.getElementById("top-qr-code"), {
+        text: "{{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}",
+        width: 90,
+        height: 90,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+});
 {% if authenticated %}
 var show_qr_modal = function(url){
     $("#evaluation-url").val(url);
