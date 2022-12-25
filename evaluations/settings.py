@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'competency.apps.CompetencyConfig',
     'target.apps.TargetConfig',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'target.middlewares.TargetCreateFormMiddleware'
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'target.middlewares.TargetCreateFormMiddleware',
 ]
 
 ROOT_URLCONF = 'evaluations.urls'
@@ -81,7 +83,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'evaluations.context_processors.site_common_texts'
+                'evaluations.context_processors.site_common_texts',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -170,8 +174,32 @@ AUTH_USER_MODEL = 'account.User'
 
 # Login
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL='/login'
+LOGIN_REDIRECT_URL = '/account/mypage'
+LOGOUT_REDIRECT_URL='/'
+
+AUTHENTICATION_BACKENDS = (
+    #'social_core.backends.open_id.OpenIdAuth',
+    #'social_core.backends.google.GoogleOpenId',
+    #'social_core.backends.google.GoogleOAuth2',
+
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# ソーシャルログインキー/シークレット
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')  # クライアントID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET') # クライアント シークレット
+SOCIAL_AUTH_FACEBOOK_KEY = env('SOCIAL_AUTH_FACEBOOK_KEY')  # アプリID
+SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')  # app secret
+SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY') # Consumer Key
+SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET') # Consumer Secret
+SOCIAL_AUTH_GITHUB_KEY = env('SOCIAL_AUTH_GITHUB_KEY') # Client ID
+SOCIAL_AUTH_GITHUB_SECRET = env('SOCIAL_AUTH_GITHUB_SECRET') # Client Secret
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = env('SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = env('SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET')
 
 INDUSTORIES = (
     (1,"メーカー：食品・農林・水産"),
