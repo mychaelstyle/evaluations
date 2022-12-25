@@ -24,6 +24,7 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   
 </head>
+{% if GOOGLE_ANALYTICS_ID %}
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_ID}}"></script>
 <script>
@@ -33,9 +34,12 @@
 
   gtag('config', '{{GOOGLE_ANALYTICS_ID}}');
 </script>
+{% endif %}
 <body class="hold-transition fixed layout-top-nav">
 <div class="wrapper">
-
+    {% if request.user.is_authenticated %}
+    {% include 'navbar.html' %}
+    {% endif %}
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -68,6 +72,9 @@
                                 </h5>
                                 <div class="text-right" style="color:#ffffff;">
                                     {{target.description}}
+                                </div>
+                                <div class="text-right" style="color:#ffffff;">
+                                    {{target.created_at}}
                                 </div>
                             </div>
                         </div>
@@ -122,30 +129,43 @@
                 {% if messages %}
                 <div class="row">
                     {% for message in messages %}
-                    <div class="col col-md-12 alert alert-danger" role="alert">
+                    <div class="col col-sm-12 alert alert-danger" role="alert">
                         {{ message }}
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
-                <div class="row">
-                    <div class="col col-md-4 text-left text-nowrap pb-3" style="min-width:350px;">
-                        作成：{{target.created_at}}
+                {% if authenticated %}
+                <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
+                    {% csrf_token %}
+                    <div class="row text-center">
+                        {% if request.user.is_authenticated %}
+                        {% else %}
+                        <a href="{% url 'social:begin' 'github' %}" class="btn btn-primary btn-sm col col-md-2 m-1 btn-github-login">
+                            <i class="fa-brands fa-github"></i> GitHubログイン
+                        </a>
+                        <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-primary btn-sm col col-md-2 m-1 btn-facebook-login">
+                            <i class="fa-brands fa-facebook"></i> Facebookログイン
+                        </a>
+                        <!--
+                        <a href="#" class="btn btn-primary btn-sm col col-md-2 m-1 btn-linkedin-login">
+                            <i class="fa-brands fa-linkedin"></i> LinkedInログイン
+                        </a>-->
+                        {% endif %}
+                        <button class="btn btn-success btn-sm col col-md-2 m-1 btn-request-evaluation" type="button">
+                            <i class="fa-solid fa-user"></i> 新規に評価を依頼
+                        </button>
+
+                        <button class="btn btn-success btn-sm col col-md-2 m-1" data-toggle="modal" data-target="#modal-create-action" type="button">
+                            <i class="fa fa-plus-square"></i> 行動目標を追加
+                        </button>
+                        <button type="submit" class="btn btn-danger btn-sm col col-md-2 m-1"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
                     </div>
-                    <div class="col col-md-8 text-right pb-3" style="min-width:350px;">
+                </form>
+                {% endif %}
+                <div class="row">
+                    <div class="col col-md-12 text-right pb-3" style="min-width:350px;">
                         {% if authenticated %}
-                        <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
-                            {% csrf_token %}
-                            <button class="btn btn-success btn-sm btn-request-evaluation" type="button">
-                                <i class="fa-solid fa-user"></i> 新規に評価を依頼
-                            </button>
-
-                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create-action" type="button">
-                                <i class="fa fa-plus-square"></i> 行動目標を追加
-                            </button>
-
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
-                        </form>
                         {% else %}
                         <form name="auth-passcode" method="post" action="{% url 'auth-passcode' target.uuid %}">
                             {% csrf_token %}
