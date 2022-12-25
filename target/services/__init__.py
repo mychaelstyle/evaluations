@@ -63,6 +63,10 @@ def authenticate(request, uuid:str, passcode:str) -> Target:
     authed_targets = request.session.get(AUTH_TARGETS_SESSION,[])
     authed_targets.append(uuid)
     request.session[AUTH_TARGETS_SESSION] = authed_targets
+    # 作成者がログインしていたら記録
+    if target.user is None and request.user.is_authenticated:
+        target.user = request.user
+        target.save()
     # 目標設定のcreator_idを確認して関連付け
     creator_id = get_anonymous(request)
     if target.creator_id is None:

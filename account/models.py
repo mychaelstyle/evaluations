@@ -142,6 +142,7 @@ class Organization(BaseModel):
     """
     組織・会社を登録するデータモデル
     """
+    code = models.CharField(max_length=255,validators=[MinLengthValidator(8),],verbose_name=_("organization_code"))
     # 組織名
     name = models.CharField(max_length=255,validators=[MinLengthValidator(6),],verbose_name=_("account_organization_name"))
     # 保有者

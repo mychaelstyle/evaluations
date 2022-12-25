@@ -9,7 +9,7 @@ from django.utils import timezone
 from datetime import datetime, date, time
 import random
 
-from . import api
+from . import api, mypage
 
 from competency.models import TaskEvaluationTaskProfile, TaskSkill
 from ..models import Target, Evaluation, EvaluationItemValue
@@ -132,7 +132,8 @@ def evaluation(request,uuid:str):
                 evaluation.remote_address = get_remote_address(request)
                 evaluation.remote_host = request.META.get('REMOTE_HOST', None)
                 evaluation.user_agent = request.META.get('HTTP_USER_AGENT', None)
-
+                if request.user.is_authenticated:
+                    evaluation.user = request.user
                 evaluation.save()
                 # セッションの設定
                 authed_evals = request.session.get("authorized_evaluations",[])
