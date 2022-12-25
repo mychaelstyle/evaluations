@@ -18,13 +18,15 @@ from django.urls import path,include
 from django.conf.urls.i18n import i18n_patterns
 from competency.views import index
 from target.views import target, add_action, auth_passcode, exit_authenticated, evaluation
-from account import views as accountviews
+from account.views import Login, Logout, privacy, terms
 from target.views.mypage import index as mypage_index
 
 urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
-    path('login', accountviews.Login.as_view(),name="login"),
-    path('logout',accountviews.Logout.as_view(),name="logout"),
+    path('login', Login.as_view(),name="login"),
+    path('logout',Logout.as_view(),name="logout"),
+    path('privacy',privacy,name="privacy"),
+    path('terms',terms,name="terms"),
     path('account/mypage',mypage_index, name="mypage"),
     path('api/1.0/competency/', include('competency.urls')),
     path('api/1.0/target/', include('target.urls')),

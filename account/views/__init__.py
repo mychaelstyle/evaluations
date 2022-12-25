@@ -9,6 +9,12 @@ from ..forms import LoginForm
 def mypage(request):
     return render(request=request,template_name='account/mypage.html')
 
+def privacy(request):
+    return render(request=request, template_name='privacy.html')
+
+def terms(request):
+    return render(request=request, template_name='terms.html')
+
 class Login(LoginView):
     """ログインページ"""
     form_class = LoginForm
@@ -19,3 +25,4 @@ class Login(LoginView):
 class Logout(LoginRequiredMixin, LogoutView):
     """ログアウトページ"""
     template_name = 'account/login.html'
+
