@@ -378,12 +378,9 @@
                 <div class="col col-md-12  d-flex align-items-center justify-content-center">
                     <div class="mx-auto">
                         <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
-                            <input type="text" name="evaluation_url" class="form-control" id="evaluation-url"
-                                value="https://example.com/">
+                            <input type="text" name="evaluation_url" class="form-control" id="qr-evaluation-url" value="https://example.com/">
                             <div class="input-group-append">
-                                <button class="input-group-text btn-copy-evaluation-url"
-                                    id="new-evaluation-url"
-                                    evaluation-url="">
+                                <button class="input-group-text" id="btn-qr-evaluation-url-copy">
                                     <i class="fa-solid fa-copy"></i>
                                 </button>
                             </div>
@@ -466,26 +463,36 @@ $(function(){
 });
 {% if authenticated %}
 var show_qr_modal = function(url){
-    $("#evaluation-url").val(url);
-    $("#new-evaluation-url").removeAttr("evaluation-url");
-    $("#new-evaluation-url").attr("evaluation-url",url);
+    $("#qr-evaluation-url").val(url);
     $("#evaluation-url-qrcode").text("");
     new QRCode(document.getElementById("evaluation-url-qrcode"), url);
     $('#modal-request-evaluation').modal('show');
 }
 $(function(){
-    $('.btn-copy-evaluation-url').click(function(e){
-        text = $(this).attr("evaluation-url");
+    $("#btn-qr-evaluation-url-copy").click(function(e){
+        url = $("#qr-evaluation-url").val();
         if (navigator.clipboard == undefined) {
-            window.clipboardData.setData("Text", text);
+            window.clipboardData.setData("Text", url);
         } else {
-            navigator.clipboard.writeText(text);
+            navigator.clipboard.writeText(url);
         }
-        alert('コピーしました！' + '\n' + text)
     });
-    $('.btn-show-request-qr-code').click(function(e){
-        url = $(this).attr('evaluation-url');
-        show_qr_modal(url);
+
+    $('.btn-copy-evaluation-url').each(function(){
+        $(this).click(function(e){
+            url = $(this).attr("evaluation-url");
+            if (navigator.clipboard == undefined) {
+                window.clipboardData.setData("Text", url);
+            } else {
+                navigator.clipboard.writeText(url);
+            }
+        });
+    });
+    $('.btn-show-request-qr-code').each(function(){
+        $(this).click(function(e){
+            url = $(this).attr('evaluation-url');
+            show_qr_modal(url);
+        });
     });
     $('.btn-request-evaluation').click(function(e){
         url = '{% url "request-evaluation" '000' %}';
@@ -497,9 +504,6 @@ $(function(){
             if(data['result'] == 'OK'){
                 evaluation_url = '{% url "evaluation" '0000' %}';
                 evaluation_url = evaluation_url.replace('0000',data.data.uuid);
-                $('#evaluation-url').val('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
-                $('#new-evaluation-url').removeAttr("evaluation-url");
-                $('#new-evaluation-url').attr("evaluation-url",'{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
                 show_qr_modal('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
             } else {
             }
