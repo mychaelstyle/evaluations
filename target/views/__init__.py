@@ -229,6 +229,7 @@ def evaluation(request,uuid:str):
                 if form.is_valid():
                     target_item = None
                     item_id = form.cleaned_data.get('item_id')
+                    print(form.cleaned_data)
                     for item in evaluation.target.items.all():
                         if item.item.id == item_id:
                             target_item = item
@@ -288,3 +289,38 @@ def evaluation(request,uuid:str):
                 return render(request,'evaluation/feedback.html',{"evaluation":evaluation, "feedback_form":form})
         else:
             return render(request,'evaluation/complete.html',{"evaluation":evaluation})
+
+def evaluation_report(request, uuid:str):
+    """指定の目標設定に対する評価の集計情報を表示
+
+    Args:
+        request (_type_): _description_
+        uuid (str): 目標設定のUUID(target.uuid)
+    """
+    target = Target.objects.prefetch_related('items','items__item').filter(uuid=uuid).first()
+    if target is None:
+        raise Http404('Not found!')
+    
+    if is_authenticated(request,uuid):
+        evaluations = Evaluation.objects.prefetch_related('items','items__target_item').filter(target=target).all()
+        report = {}
+        for evaluation in evaluations:
+            items = evaluation.items.all()
+            for item in items:
+                print(vars(item))
+                if item.target_item.id not in report:
+                    report[item.target_item.id] = {'total_count':0, 'total_score':0, 'item':item.target_item.item}
+                print(item.score)
+                if item.score is not None:
+                    # ToDo 後々加重平均にしたい:何で加重するか未設計
+                    report[item.target_item.id]['total_score'] += item.score
+                    report[item.target_item.id]['total_count'] += 1
+        
+        for key in report.keys():
+            item = report[key]
+            if report[key]['total_count'] is not None and report[key]['total_count'] > 0:
+                report[key]['average'] = report[key]['total_score'] / report[key]['total_count']
+        
+        return render(request,'evaluation/report.html',{"target":target, "report":report})
+    else:
+        raise Http404('Not found!')

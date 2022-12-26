@@ -65,7 +65,7 @@
                 <form name="evaluate-form" id="evaluate-form" action="{% url 'evaluation' evaluation.uuid %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="item_id" value="{{evaluation_item.item.id}}">
-                    <input type="hidden" name="skip" id="skip-flag" value="0">
+                    <input type="hidden" name="skip" id="skip-flag" value="" data-gtm-form-interact-field-id="0">
                     <div class="row p-2 form-group">
                         <label for="score">{{evaluation.target.last_name}}{{evaluation.target.first_name}}さんの能力レベル</label>
                         <input type="range" class="multi-range w-100 form-group"
