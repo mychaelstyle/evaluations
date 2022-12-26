@@ -168,7 +168,7 @@ class EvaluationEvaluateForm(forms.Form):
     item_id = forms.IntegerField(min_value=1,required=True)
     score = forms.IntegerField(max_value=100,required=True)
     self_score = forms.IntegerField(max_value=100,required=True)
-    skip = forms.BooleanField(required=True)
+    skip = forms.BooleanField(required=False, initial=False)
     class Meta:
         model = EvaluationItemValue
         fields = ['score','self_score']
