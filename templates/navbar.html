@@ -12,21 +12,21 @@
       <!-- Right navbar links -->
       <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
         <li class="nav-item">
-            <a href="{% url 'mypage' %}" class="nav-link">
-                <i class="fa-solid fa-user"></i>
+            <a href="{% url 'mypage' %}" class="nav-link" title="マイページ">
+                <i class="fa-solid fa-user" title="マイページ"></i>
             </a>
         </li>
         {% if request.user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}" titile="ログアウト">
-            <i class="fa-solid fa-right-from-bracket" alt="ログアウト"></i>
+          <a class="nav-link" href="{% url 'logout' %}" title="ログアウト">
+            <i class="fa-solid fa-right-from-bracket" title="ログアウト"></i>
           </a>
         </li>
         {% endif %}
         <li class="nav-item">
-            <a class="nav-link" data-widget="control-sidebar" href="#" id="open-csidebar">
+            <a class="nav-link" data-widget="control-sidebar" href="#" id="open-csidebar" title="選択済み項目">
               <i class="fa-solid fa-clipboard-check"></i>
-              <span class="badge badge-danger navbar-badge added-number"></span>
+              <span class="badge badge-danger navbar-badge added-number" title="選択済み項目"></span>
             </a>
         </li>
   
