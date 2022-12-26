@@ -1,0 +1,105 @@
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+
+<aside class="control-sidebar control-sidebar-light sticky-top" id="cust_sidebar" style="width:400px;">
+    <div class="p-3">
+      <h5>目標設定シートの作成</h5>
+      <form name="target-create-form" id="target-create-form" action="{% url 'api-target-create' %}" method="post">
+        {% csrf_token %}
+        <div class="row form-group">
+          <input type="text" name="viewname" id="target-viewname" class="form-control" placeholder="目標のタイトル（必須）">
+          <div class="invalid-feedback" id="feedback-viewname"></div>
+        </div>
+        <div class="row form-group">
+          <input type="text" name="description" id="target-description" class="form-control" placeholder="目標ので目指す姿（任意）">
+          <div class="invalid-feedback" id="feedback-description"></div>
+        </div>
+        <hr>
+        <div id="target-items">
+        </div>
+        <div class="invalid-feedback" id="feedback-items"></div>
+        <hr>
+        <div class="row form-group">
+          <div class="col">
+            <label for="industory">姓</label>
+            <input name="last_name" id="target-last_name" type="text" class="form-control" placeholder="姓（任意）">
+            <div class="invalid-feedback" id="feedback-last_name"></div>
+          </div>
+          <div class="col">
+            <label for="industory">名</label>
+            <input name="first_name" id="target-first_name" type="text" class="form-control" placeholder="名（任意）">
+            <div class="invalid-feedback" id="feedback-first_name"></div>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col">
+            <label for="industory">業界・業種</label>
+            {{request.target_create_form.industory}}
+          </div>
+          <div class="col">
+            <label for="target-industory_opt">業界・業種（その他）</label>
+            <input name="industory_opt" id="target-industory_opt" type="text" class="form-control" placeholder="分類にない業界を入力">
+            <div class="invalid-feedback" id="feedback-industory_opt"></div>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col">
+            <label for="job">職種</label>
+            <input name="job" id="target-job" type="text" class="form-control" placeholder="例）スーパーバイザー">
+            <div class="invalid-feedback" id="feedback-position"></div>
+          </div>
+          <div class="col">
+            <label for="grade">グレード</label>
+            {{request.target_create_form.grade}}
+            <div class="invalid-feedback" id="feedback-grade"></div>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col">
+            <label for="target-position">肩書き(任意)</label>
+            <input name="position" id="target-position" type="text" class="form-control" placeholder="例）係長・チームリーダー">
+            <div class="invalid-feedback" id="feedback-position"></div>
+          </div>
+          <div class="col">
+            <label for="target-role">役割(任意)</label>
+            <input name="role" id="target-role" type="text" class="form-control" placeholder="例）ユーザーのサポート窓口">
+            <div class="invalid-feedback" id="feedback-role"></div>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col">
+            <label for="target-org_name">会社名(任意)</label>
+            <input name="org_name" id="target-org_name" type="text" class="form-control" placeholder="会社名">
+            <div class="invalid-feedback" id="feedback-org_name"></div>
+          </div>
+          <div class="col">
+            <label for="target-department_name">部門・部署名(任意)</label>
+            <input name="department_name" id="target-department_name" type="text" class="form-control" placeholder="例）○○事業部 開発チーム">
+            <div class="invalid-feedback" id="feedback-department_name"></div>
+          </div>
+        </div>
+        <div class="row form-group">
+          <div class="col">
+            <label for="target-org_url">組織URL(任意)</label>
+            <input name="org_url" id="target-org_url" type="text" class="form-control" placeholder="https://example.com">
+            <div class="invalid-feedback" id="feedback-org_url"></div>
+          </div>
+          <div class="col">
+            <label for="target-passcode">パスコード(任意)</label>
+            <input name="passcode" id="target-passcode" type="password" class="form-control" placeholder="編集用パスコード">
+            <div class="invalid-feedback" id="feedback-passcode"></div>
+          </div>
+        </div>
+        <div class="row small p-3">
+          ※ 会員登録などはされません。<br>
+          ※ 目標設定シートを作成するとUUIDでユニークな目標設定シートURLが発行され、いつでもweb上で見直すことができます。<br>
+          ※ UUID付きのURLは意図せず拡散されないように自己責任・自己管理するようお願いします。<br>
+        </div>
+        <div id="target-create-messages" class="alert alert-danger" style="display:none;"></div>
+        <div class="row form-group">
+          <button type="button" class="btn btn-primary btn-lg btn-block" id="target-create-button"><span class="small">目標設定シートを作成する</span></button>
+        </div>
+      </form>
+    </div>
+  </aside>

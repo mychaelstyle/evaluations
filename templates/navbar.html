@@ -5,32 +5,31 @@
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand-md navbar-light navbar-white sticky-top">
     <div class="container">
-      {% if request.user.is_authenticated %}
-      <a href="/" class="navbar-brand">
-        <span class="brand-text font-weight-light">{{request.user}}さん</span>
-      </a>
-      {% else %}
       <a href="/" class="navbar-brand">
         <span class="brand-text font-weight-light">{% trans 'site_title' %}</span>
       </a>
-      {% endif %}
+      {% include 'components/searchform.html' %}
       <!-- Right navbar links -->
       <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </a>
-        </li>
         <li class="nav-item">
             <a href="{% url 'mypage' %}" class="nav-link">
                 <i class="fa-solid fa-user"></i>
             </a>
         </li>
+        {% if request.user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}" titile="ログアウト">
             <i class="fa-solid fa-right-from-bracket" alt="ログアウト"></i>
           </a>
         </li>
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" data-widget="control-sidebar" href="#" id="open-csidebar">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <span class="badge badge-danger navbar-badge added-number"></span>
+            </a>
+        </li>
+  
       </ul>
     </div>
   </nav>

@@ -1,45 +1,9 @@
+{% extends 'simple.html' %}
 {% load static %}
 {% load i18n %}
 {% load mathfilters %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="robots" content="noindex">
-  <meta name="googlebot" content="noindex">
 
-  <title>{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}</title>
-
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{% static 'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'admin-lte/dist/css/adminlte.min.css' %}">
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  
-</head>
-{% if GOOGLE_ANALYTICS_ID %}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_ID}}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '{{GOOGLE_ANALYTICS_ID}}');
-</script>
-{% endif %}
-<body class="hold-transition fixed layout-top-nav">
-<div class="wrapper">
-    {% if request.user.is_authenticated %}
-    {% include 'navbar.html' %}
-    {% endif %}
+{% block content %}
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -138,28 +102,37 @@
                 {% if authenticated %}
                 <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
                     {% csrf_token %}
-                    <div class="row text-center">
+                    <div class="row">
                         {% if request.user.is_authenticated %}
                         {% else %}
-                        <a href="{% url 'social:begin' 'github' %}" class="btn btn-primary btn-sm col col-md-2 m-1 btn-github-login">
-                            <i class="fa-brands fa-github"></i> GitHubログイン
-                        </a>
-                        <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-primary btn-sm col col-md-2 m-1 btn-facebook-login">
-                            <i class="fa-brands fa-facebook"></i> Facebookログイン
-                        </a>
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'github' %}" class="btn btn-primary btn-sm btn-block text-nowrap btn-github-login">
+                                <i class="fa-brands fa-github"></i> GitHubログイン
+                            </a>
+                        </div>
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-primary btn-sm btn-block text-nowrap btn-facebook-login">
+                                <i class="fa-brands fa-facebook"></i> Facebookログイン
+                            </a>
+                        </div>
                         <!--
                         <a href="#" class="btn btn-primary btn-sm col col-md-2 m-1 btn-linkedin-login">
                             <i class="fa-brands fa-linkedin"></i> LinkedInログイン
                         </a>-->
                         {% endif %}
-                        <button class="btn btn-success btn-sm col col-md-2 m-1 btn-request-evaluation" type="button">
-                            <i class="fa-solid fa-user"></i> 新規に評価を依頼
-                        </button>
-
-                        <button class="btn btn-success btn-sm col col-md-2 m-1" data-toggle="modal" data-target="#modal-create-action" type="button">
-                            <i class="fa fa-plus-square"></i> 行動目標を追加
-                        </button>
-                        <button type="submit" class="btn btn-danger btn-sm col col-md-2 m-1"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
+                        <div class="col p-1">
+                            <button class="btn btn-success btn-sm btn-block text-nowrap btn-request-evaluation" type="button">
+                                <i class="fa-solid fa-user"></i> 新規に評価を依頼
+                            </button>
+                        </div>
+                        <div class="col p-1">
+                            <button class="btn btn-success btn-sm btn-block text-nowrap" data-toggle="modal" data-target="#modal-create-action" type="button">
+                                <i class="fa fa-plus-square"></i> 行動目標を追加
+                            </button>
+                        </div>
+                        <div class="col p-1">
+                            <button type="submit" class="btn btn-danger btn-block btn-sm text-nowrap"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
+                        </div>
                     </div>
                 </form>
                 {% endif %}
@@ -372,18 +345,10 @@
     </div>
     <!-- /. content-wrapper -->
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-        <!-- To the right -->
-        <div class="float-right d-none d-sm-inline">
-        </div>
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2022- <a href="https://twitter.com/haruchaco" target="_blank"><i class="fa-brands fa-twitter"></i></a>.</strong> All rights reserved.
-    </footer>
+{% endblock %}
 
-</div>
-<!-- /. wrapper -->
-
+{% block compornents %}
+{% include 'components/sidebar_selected.html' %}
 {% if authenticated %}
 <div class="modal" id="modal-request-evaluation">
     <div class="modal-dialog">
@@ -483,30 +448,10 @@
     </div>
 </div>
 <!-- ./modal-create-action -->
-
-
 {% endif %}
-<!-- REQUIRED SCRIPTS -->
+{% endblock %}
 
-<!-- jQuery -->
-<script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{% static 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- Select2 -->
-<script src="{% static 'admin-lte/plugins/select2/js/select2.full.min.js' %}"></script>
-<!-- Bootstrap4 Duallistbox -->
-<script src="{% static 'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
-<!-- InputMask -->
-<script src="{% static 'admin-lte/plugins/moment/moment-with-locales.min.js' %}"></script>
-<script src="{% static 'admin-lte/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
-<!-- Bootstrap Switch -->
-<script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
-<!-- qrcode.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- common -->
-<script src="{% static 'js/common.js' %}"></script>
+{% block scripts %}
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
 $(function(){
@@ -620,8 +565,16 @@ $(function(){
             alert(errorThrown);
         });
     });
+    show_selected_items('#target-items','.added-number');
+    const cookies = document.cookie;
+    console.log(cookies);
+    const array = cookies.split(';');
+    array.forEach(function(value) {
+        const content = value.split('=');
+        key = '#target-' + content[0].trim();
+        $(key).val(decodeURIComponent(content[1]));
+    })
 });
 {% endif %}
 </script>
-</body>
-</html>
+{% endblock %}

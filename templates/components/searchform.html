@@ -1,0 +1,15 @@
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+
+<!-- competency search form -->
+<form class="form-inline ml-3" method="get" name="word-search-form" id="word-search-form" action="/" api-url="{% url 'api-tasks' %}">
+    <div class="input-group input-group-m">
+      <input name="q" id="search-query" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+      <div class="input-group-append">
+        <button class="btn btn-navbar search-exec" type="button">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
