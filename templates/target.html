@@ -106,19 +106,20 @@
                         {% if request.user.is_authenticated %}
                         {% else %}
                         <div class="col p-1">
-                            <a href="{% url 'social:begin' 'github' %}" class="btn btn-primary btn-sm btn-block text-nowrap btn-github-login">
-                                <i class="fa-brands fa-github"></i> GitHubログイン
-                            </a>
-                        </div>
-                        <div class="col p-1">
                             <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-primary btn-sm btn-block text-nowrap btn-facebook-login">
                                 <i class="fa-brands fa-facebook"></i> Facebookログイン
                             </a>
                         </div>
-                        <!--
-                        <a href="#" class="btn btn-primary btn-sm col col-md-2 m-1 btn-linkedin-login">
-                            <i class="fa-brands fa-linkedin"></i> LinkedInログイン
-                        </a>-->
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'github' %}" class="btn btn-secondary btn-sm btn-block text-nowrap btn-github-login">
+                                <i class="fa-brands fa-github"></i> GitHubログイン
+                            </a>
+                        </div>
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'linkedin-oauth2' %}" class="btn btn-block btn-primary btn-sm btn-block text-nowrap btn-linkedin-login">
+                                <i class="fa-brands fa-linkedin"></i> Linkedinログイン
+                            </a>
+                        </div>
                         {% endif %}
                         <div class="col p-1">
                             <button class="btn btn-success btn-sm btn-block text-nowrap btn-request-evaluation" type="button">
