@@ -33,30 +33,56 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-0">
-                    <table class="table table-striped">
+                        <table class="table table-striped">
                         <thead>
                         <tr>
                             <th style="width: 10px">#</th>
                             <th>評価項目</th>
-                            <th style="width: 300px">評価グラフ</th>
-                            <th style="width: 40px">Score</th>
+                            <th style="width: 250px">評価グラフ</th>
+                            <th style="width: 30px">差分</th>
                         </tr>
                         </thead>
                         <tbody>
                             {% for key, item in report.items %}
                             <tr>
                                 <td>{{item.item.code}}.</td>
-                                <td>{{item.item.name}}</td>
                                 <td>
-                                <div class="progress progress-xs">
-                                    <div class="progress-bar progress-bar-danger" style="width: {{item.average}}%"></div>
-                                </div>
+                                    {% if item.item.task_evaluation %}
+                                        {% if item.item.task_evaluation.parent %}
+                                            {% if item.item.task_evaluation.parent.parent %}
+                                            {{item.item.task_evaluation.parent.parent.name}} - 
+                                            {% endif %}
+                                            {{item.item.task_evaluation.parent.name}} - 
+                                        {% endif %}
+                                        {{item.item.task_evaluation.name}}<br>
+                                    {% endif %}
+                                    {{item.item.name}}
                                 </td>
-                                <td><span class="badge bg-danger">{{item.average}}</span></td>
+                                <td>
+                                    <div class="progress progress-s">
+                                        <div class="progress-bar bg-success" style="width: {{item.self_evaluation}}%">自己評価</div>
+                                    </div>
+                                    <div class="progress progress-s">
+                                        <div class="progress-bar bg-info" style="width: {{item.average}}%">他者評価</div>
+                                    </div>
+                                </td>
+                                {% if item.average > item.self_evaluation %}
+                                <td><span class="badge bg-primary">{{item.average|sub:item.self_evaluation}}</span></td>
+                                {% else %}
+                                <td><span class="badge bg-danger">{{item.average|sub:item.self_evaluation}}</span></td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
-                    </table>
+                        </table>
+
+                        <div class="container p-3">
+                        {% for evaluation in evaluations %}
+                            {% if evaluation.feedback_notes %}
+                            <div class="p-3">{{evaluation.feedback_notes}}</div>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>

@@ -225,11 +225,9 @@ def evaluation(request,uuid:str):
 
             if request.method.lower() == "post":
                 form = EvaluationEvaluateForm(request.POST)
-                print(request.POST)
                 if form.is_valid():
                     target_item = None
                     item_id = form.cleaned_data.get('item_id')
-                    print(form.cleaned_data)
                     for item in evaluation.target.items.all():
                         if item.item.id == item_id:
                             target_item = item
@@ -245,7 +243,6 @@ def evaluation(request,uuid:str):
                     evaluation_value = EvaluationItemValue()
                     evaluation_value.evaluation = evaluation
                     evaluation_value.target_item = target_item
-                    print(form.cleaned_data)
                     if form.cleaned_data.get("skip"):
                         evaluation_value.score = None
                         evaluation_value.self_score = None
@@ -264,8 +261,6 @@ def evaluation(request,uuid:str):
                         evaluation.save()
                     return redirect("evaluation",uuid=uuid)
                 else:
-                    print(form.errors)
-                    print(vars(request.POST))
                     target_item_id, target_item = random.choice(list(candidates.items()))
                     return render(request,'evaluation/evaluate.html',{"evaluation":evaluation, "evaluation_item":target_item, "evaluation_form":form})
             else:
@@ -302,25 +297,32 @@ def evaluation_report(request, uuid:str):
         raise Http404('Not found!')
     
     if is_authenticated(request,uuid):
-        evaluations = Evaluation.objects.prefetch_related('items','items__target_item').filter(target=target).all()
+        self_evals = {}
+        for item in target.items.all():
+            self_evals[item.item.id] = item.self_evaluation
+        evaluations = Evaluation.objects.prefetch_related('items','items__target_item','items__target_item__item','items__target_item__item__parent').filter(target=target).all()
         report = {}
         for evaluation in evaluations:
             items = evaluation.items.all()
             for item in items:
-                print(vars(item))
-                if item.target_item.id not in report:
-                    report[item.target_item.id] = {'total_count':0, 'total_score':0, 'item':item.target_item.item}
-                print(item.score)
+                
+                if item.target_item.item.id not in report:
+                    report[item.target_item.item.id] = {
+                        'total_count':0,
+                        'total_score':0,
+                        'self_evaluation': self_evals.get(item.target_item.item.id, 0),
+                        'item':item.target_item.item
+                    }
                 if item.score is not None:
                     # ToDo 後々加重平均にしたい:何で加重するか未設計
-                    report[item.target_item.id]['total_score'] += item.score
-                    report[item.target_item.id]['total_count'] += 1
+                    report[item.target_item.item.id]['total_score'] += item.score
+                    report[item.target_item.item.id]['total_count'] += 1
         
         for key in report.keys():
             item = report[key]
             if report[key]['total_count'] is not None and report[key]['total_count'] > 0:
                 report[key]['average'] = report[key]['total_score'] / report[key]['total_count']
         
-        return render(request,'evaluation/report.html',{"target":target, "report":report})
+        return render(request,'evaluation/report.html',{"target":target, "evaluations":evaluations, "report":report})
     else:
         raise Http404('Not found!')

@@ -99,6 +99,8 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+
+                
                 {% if authenticated %}
                 <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
                     {% csrf_token %}
@@ -122,16 +124,6 @@
                         </div>
                         {% endif %}
                         <div class="col p-1">
-                            <button class="btn btn-success btn-sm btn-block text-nowrap btn-request-evaluation" type="button">
-                                <i class="fa-solid fa-user"></i> 新規に評価を依頼
-                            </button>
-                        </div>
-                        <div class="col p-1">
-                            <button class="btn btn-success btn-sm btn-block text-nowrap" data-toggle="modal" data-target="#modal-create-action" type="button">
-                                <i class="fa fa-plus-square"></i> 行動目標を追加
-                            </button>
-                        </div>
-                        <div class="col p-1">
                             <button type="submit" class="btn btn-danger btn-block btn-sm text-nowrap"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
                         </div>
                     </div>
@@ -149,173 +141,235 @@
                         {% endif %}
                     </div>
                 </div>
-                {% for key, task in tasks.items %}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-outline card-success">
-                            <div class="card-header">
-                                <h3 class="card-title">{{task.task.parent.parent.name}} -> {{task.task.parent.name}} -> {{task.task.name}}</h3>
-                                <div class="card-tools">
-                                    <button class="float-right btn btn-success btn-sm" type="button" data-toggle="collapse"
-                                    data-target="#related-skills-{{task.task.id}}" aria-expanded="false"
-                                    aria-controls="related-skills-{{task.task.id}}">関連スキル・知識を見る</button>
-                                </div>
-                                <!-- /.card-tools -->
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body p-2">
-                                {% for item_relation in task.items %}
-                                <div class="row p-3">
-                                    <div class="col-md-1 p-1 font-weight-bold text-nowrap">
-                                        {{item_relation.item.code}}
-                                    </div>
-                                    <div class="col-md-9 p-1 font-weight-bold">
-                                        <div class="">
-                                            {{item_relation.item.name}}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 text-right">
-                                        {% if authenticated %}
-                                        <div class="form-row d-flex">
-                                            <div class="col-auto">
-                                                <label for="self-evaluation-{{item_relation.id}}">自己評価</label>
-                                                <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
-                                                    id="self-evaluation-{{item_relation.id}}"
-                                                    evaluation-id="{{item_relation.id}}"
-                                                    name="self-evaluation"
-                                                    value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
-                                                    origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
-                                            </div>
-                                            <div class="col-auto">
-                                            </div>
-                                        </div>
-                                        {% else %}
-                                        <div class="progress progress-s">
-                                            <div class="progress-bar bg-success" style="width: {{item_relation.self_evaluation}}%">{{item_relation.self_evaluation}}</div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% for action in item_relation.actions.all %}
-                                <div class="row p-1 pl-5">
-                                    <div class="col-md-10 text-left">
-                                        {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
-                                            {{action.name}}
-                                        {% if action.url %}</a>{% endif %}
-                                    </div>
-                                    <div class="col-md-2 text-right">
-                                        {% if authenticated %}
-                                        <div class="form-row d-flex">
-                                            <div class="col-auto">
-                                                <label for="self-evaluation-action-{{action.id}}">進捗率</label>
-                                                <input type="range" class="multi-range action-progress" min="0" max="100" step="20"
-                                                    id="self-evaluation-action-{{action.id}}"
-                                                    action-id="{{action.id}}"
-                                                    name="progress"
-                                                    value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}"
-                                                    origin-value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}">
-                                            </div>
-                                            <div class="col-auto">
-                                            </div>
-                                        </div>
-                                        {% else %}
-                                        <div class="progress progress-xs w-75">
-                                            <div class="progress-bar bg-info" style="width: {{action.progress}}%">{{action.progress}}%　</div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% endfor %}
-                                {% endfor %}
 
-                            </div>
-                            <!-- /.card-footer -->
-                            <div class="card-body">
-                                {% for profile in task.profiles %}
-                                <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
-                                    title="{{profile.description}}">{{profile.name}}</span>
-                                {% endfor %}
-                            </div>
-                            <div class="card-body collapse" id="related-skills-{{task.task.id}}">
-                                {% for skill in task.skills %}
-                                <br>
-                                <span class="badge badge-success" data-toggle="tooltip" data-placement="top"
-                                    title="{{skill.description}}">{{skill.name}}</span>
-                                    {% for knowledge in skill.knowledges.all %}
-                                    <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
-                                    title="{{knowledge.description}}">{{knowledge.name}}</span>
-                                    {% endfor %}
-                                {% endfor %}
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
+
+
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <a class="nav-item nav-link active" id="nav-home-tab"
+                            data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">目標設定</a>
+                      <a class="nav-item nav-link" id="nav-profile-tab"
+                            data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">評価依頼</a>
+                      <a class="nav-item nav-link" id="nav-contact-tab"
+                            data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">レポート</a>
                     </div>
-                </div>
-                {% endfor %}
-                <hr>
-                <div>
-                    <div class="card">
-                        <div class="card-header">
-                          <h3 class="card-title">作成済みの評価依頼</h3>
-                          <div class="card-tools">
-                            {{target.evaluations.count}}件
-                          </div>
+                  </nav>
+                  <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div class="row pull-right text-right">
+                            <div class="col p-3">
+                                <button class="btn btn-success btn-sm text-nowrap" data-toggle="modal" data-target="#modal-create-action" type="button">
+                                    <i class="fa fa-plus-square"></i> 行動目標を追加
+                                </button>
+                            </div>
                         </div>
-                        <!-- /.card-header -->
-                        <div class="card-body p-0">
-                          
-                          <table class="table table-striped">
-                            <tbody>
-                                {% for evaluation in target.evaluations.all %}
-                                    <td>
-                                        <div class="row">
-                                            <div class="col col-md-7">
-                                                {% if evaluation.status == 100 %}
-                                                    {{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}
-                                                {% else %}
-                                                <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
-                                                    <input type="text" name="evaluation_url" class="form-control"
-                                                        value="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
-                                                    <div class="input-group-append">
-                                                        <button class="input-group-text btn-copy-evaluation-url"
-                                                            evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
-                                                            <i class="fa-solid fa-copy"></i>
-                                                        </button>
+
+                        {% for key, task in tasks.items %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-outline card-success">
+                                    <div class="card-header">
+                                        <h3 class="card-title">{{task.task.parent.parent.name}} -> {{task.task.parent.name}} -> {{task.task.name}}</h3>
+                                        <div class="card-tools">
+                                            <button class="float-right btn btn-success btn-sm" type="button" data-toggle="collapse"
+                                            data-target="#related-skills-{{task.task.id}}" aria-expanded="false"
+                                            aria-controls="related-skills-{{task.task.id}}">関連スキル・知識を見る</button>
+                                        </div>
+                                        <!-- /.card-tools -->
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body p-2">
+                                        {% for item_relation in task.items %}
+                                        <div class="row p-3">
+                                            <div class="col-md-1 p-1 font-weight-bold text-nowrap">
+                                                {{item_relation.item.code}}
+                                            </div>
+                                            <div class="col-md-9 p-1 font-weight-bold">
+                                                <div class="">
+                                                    {{item_relation.item.name}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                {% if authenticated %}
+                                                <div class="form-row d-flex">
+                                                    <div class="col-auto">
+                                                        <label for="self-evaluation-{{item_relation.id}}">自己評価</label>
+                                                        <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
+                                                            id="self-evaluation-{{item_relation.id}}"
+                                                            evaluation-id="{{item_relation.id}}"
+                                                            name="self-evaluation"
+                                                            value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
+                                                            origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
+                                                    </div>
+                                                    <div class="col-auto">
                                                     </div>
                                                 </div>
-                                                {% endif %}
-                                            </div>
-                                            <div class="col col-md-2 text-nowrap">
-                                                {{evaluation.due_date}}
-                                            </div>
-                                            <div class="col col-md-2">
-                                                <div class="progress progress-xs">
-                                                    <div class="progress-bar progress-bar-danger" style="width: {{evaluation.status}}%"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col col-md-1">
-                                                {% if evaluation.status == 100 %}
-                                                <span class="badge bg-secondary">{{evaluation.get_status_display}}</span>
-                                                {% elif evaluation.status == 0 %}
-                                                <span class="badge bg-primary">未使用</span>
-                                                <button type="button" class="badge bg-success btn-show-request-qr-code"
-                                                    evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}"
-                                                    >QRコード</button>
                                                 {% else %}
-                                                <span class="badge bg-success">評価中</span>
+                                                <div class="progress progress-s">
+                                                    <div class="progress-bar bg-success" style="width: {{item_relation.self_evaluation}}%">{{item_relation.self_evaluation}}</div>
+                                                </div>
                                                 {% endif %}
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                          </table>
+                                        {% for action in item_relation.actions.all %}
+                                        <div class="row p-1 pl-5">
+                                            <div class="col-md-10 text-left">
+                                                {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
+                                                    {{action.name}}
+                                                {% if action.url %}</a>{% endif %}
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                {% if authenticated %}
+                                                <div class="form-row d-flex">
+                                                    <div class="col-auto">
+                                                        <label for="self-evaluation-action-{{action.id}}">進捗率</label>
+                                                        <input type="range" class="multi-range action-progress" min="0" max="100" step="20"
+                                                            id="self-evaluation-action-{{action.id}}"
+                                                            action-id="{{action.id}}"
+                                                            name="progress"
+                                                            value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}"
+                                                            origin-value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}">
+                                                    </div>
+                                                    <div class="col-auto">
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                <div class="progress progress-xs w-75">
+                                                    <div class="progress-bar bg-info" style="width: {{action.progress}}%">{{action.progress}}%　</div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% endfor %}
+        
+                                    </div>
+                                    <!-- /.card-footer -->
+                                    <div class="card-body">
+                                        {% for profile in task.profiles %}
+                                        <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                            title="{{profile.description}}">{{profile.name}}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="card-body collapse" id="related-skills-{{task.task.id}}">
+                                        {% for skill in task.skills %}
+                                        <br>
+                                        <span class="badge badge-success" data-toggle="tooltip" data-placement="top"
+                                            title="{{skill.description}}">{{skill.name}}</span>
+                                            {% for knowledge in skill.knowledges.all %}
+                                            <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                            title="{{knowledge.description}}">{{knowledge.name}}</span>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
                         </div>
-                        <!-- /.card-body -->
-                      </div>
-                </div>
-                <hr>
+                        {% endfor %}
+        
+
+
+
+                        
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+                        {% if authenticated %}
+                        <div class="row pull-right text-right">
+                            <div class="col p-3">
+                                <button class="btn btn-success btn-sm text-nowrap btn-request-evaluation" type="button">
+                                    <i class="fa-solid fa-user"></i> 新規に評価を依頼
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                              <h3 class="card-title">作成済みの評価依頼</h3>
+                              <div class="card-tools">
+                                {{target.evaluations.count}}件
+                              </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body p-0">
+                              
+                              <table class="table table-striped">
+                                <tbody>
+                                    {% for evaluation in target.evaluations.all %}
+                                        <td>
+                                            <div class="row">
+                                                <div class="col col-md-7">
+                                                    {% if evaluation.status == 100 %}
+                                                        {{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}
+                                                    {% else %}
+                                                    <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
+                                                        <input type="text" name="evaluation_url" class="form-control"
+                                                            value="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
+                                                        <div class="input-group-append">
+                                                            <button class="input-group-text btn-copy-evaluation-url"
+                                                                evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
+                                                                <i class="fa-solid fa-copy"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col col-md-2 text-nowrap">
+                                                    {{evaluation.due_date}}
+                                                </div>
+                                                <div class="col col-md-2">
+                                                    <div class="progress progress-xs">
+                                                        <div class="progress-bar progress-bar-danger" style="width: {{evaluation.status}}%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-1">
+                                                    {% if evaluation.status == 100 %}
+                                                    <span class="badge bg-secondary">{{evaluation.get_status_display}}</span>
+                                                    {% elif evaluation.status == 0 %}
+                                                    <span class="badge bg-primary">未使用</span>
+                                                    <button type="button" class="badge bg-success btn-show-request-qr-code"
+                                                        evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}"
+                                                        >QRコード</button>
+                                                    {% else %}
+                                                    <span class="badge bg-success">評価中</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                            <!-- /.card-body -->
+                          </div>
+                          {% else %}
+                          <div class="row p-3">
+                              評価依頼をするにはパスコードを入力して認証してください。
+                          </div>
+                          {% endif %}
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        {% if authenticated %}
+                        <div class="row p-3">
+                            <a href="{{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}/report">
+                                {{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}/report
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="row p-3">
+                            レポートを見るにはパスコードを入力して認証してください。
+                        </div>
+                        {% endif %}
+                  </div>
+                  </div>
+
+
+
+
+
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-primary">
