@@ -9,7 +9,7 @@ from django.utils import timezone
 from datetime import datetime, date, time
 import random
 
-from . import api
+from . import api, mypage
 
 from competency.models import TaskEvaluationTaskProfile, TaskSkill
 from ..models import Target, Evaluation, EvaluationItemValue
@@ -31,7 +31,8 @@ def exit_authenticated(request, uuid:str):
     return redirect("show-target",uuid)
 
 def target(request, uuid:str):
-    target = Target.objects.prefetch_related('items','items__item').filter(uuid=uuid).first()
+    target = Target.objects.prefetch_related('items','items__item','evaluations'
+                                                ).filter(uuid=uuid).first()
     if target is None:
         raise Http404('Not found!')
     if request.method.lower() == "post":
@@ -61,7 +62,9 @@ def target(request, uuid:str):
         if "profiles" not in tasks[task_id]:
             tasks[task_id]["profiles"] = []
         tasks[task_id]["profiles"].append(profile)
-    skills = TaskSkill.objects.filter(task_evaluation_id__in=task_ids).select_related('skill_evaluation').prefetch_related('skill_evaluation__knowledges').all()
+    skills = TaskSkill.objects.filter(task_evaluation_id__in=task_ids
+                                      ).select_related('skill_evaluation'
+                                        ).prefetch_related('skill_evaluation__knowledges').all()
     for skillrow in skills:
         task_id = skillrow.task_evaluation.id
         skill = skillrow.skill_evaluation
@@ -129,7 +132,8 @@ def evaluation(request,uuid:str):
                 evaluation.remote_address = get_remote_address(request)
                 evaluation.remote_host = request.META.get('REMOTE_HOST', None)
                 evaluation.user_agent = request.META.get('HTTP_USER_AGENT', None)
-
+                if request.user.is_authenticated:
+                    evaluation.user = request.user
                 evaluation.save()
                 # セッションの設定
                 authed_evals = request.session.get("authorized_evaluations",[])
@@ -221,7 +225,6 @@ def evaluation(request,uuid:str):
 
             if request.method.lower() == "post":
                 form = EvaluationEvaluateForm(request.POST)
-                print(request.POST)
                 if form.is_valid():
                     target_item = None
                     item_id = form.cleaned_data.get('item_id')
@@ -240,7 +243,6 @@ def evaluation(request,uuid:str):
                     evaluation_value = EvaluationItemValue()
                     evaluation_value.evaluation = evaluation
                     evaluation_value.target_item = target_item
-                    print(form.cleaned_data)
                     if form.cleaned_data.get("skip"):
                         evaluation_value.score = None
                         evaluation_value.self_score = None
@@ -259,8 +261,6 @@ def evaluation(request,uuid:str):
                         evaluation.save()
                     return redirect("evaluation",uuid=uuid)
                 else:
-                    print(form.errors)
-                    print(vars(request.POST))
                     target_item_id, target_item = random.choice(list(candidates.items()))
                     return render(request,'evaluation/evaluate.html',{"evaluation":evaluation, "evaluation_item":target_item, "evaluation_form":form})
             else:
@@ -284,3 +284,45 @@ def evaluation(request,uuid:str):
                 return render(request,'evaluation/feedback.html',{"evaluation":evaluation, "feedback_form":form})
         else:
             return render(request,'evaluation/complete.html',{"evaluation":evaluation})
+
+def evaluation_report(request, uuid:str):
+    """指定の目標設定に対する評価の集計情報を表示
+
+    Args:
+        request (_type_): _description_
+        uuid (str): 目標設定のUUID(target.uuid)
+    """
+    target = Target.objects.prefetch_related('items','items__item').filter(uuid=uuid).first()
+    if target is None:
+        raise Http404('Not found!')
+    
+    if is_authenticated(request,uuid):
+        self_evals = {}
+        for item in target.items.all():
+            self_evals[item.item.id] = item.self_evaluation
+        evaluations = Evaluation.objects.prefetch_related('items','items__target_item','items__target_item__item','items__target_item__item__parent').filter(target=target).all()
+        report = {}
+        for evaluation in evaluations:
+            items = evaluation.items.all()
+            for item in items:
+                
+                if item.target_item.item.id not in report:
+                    report[item.target_item.item.id] = {
+                        'total_count':0,
+                        'total_score':0,
+                        'self_evaluation': self_evals.get(item.target_item.item.id, 0),
+                        'item':item.target_item.item
+                    }
+                if item.score is not None:
+                    # ToDo 後々加重平均にしたい:何で加重するか未設計
+                    report[item.target_item.item.id]['total_score'] += item.score
+                    report[item.target_item.item.id]['total_count'] += 1
+        
+        for key in report.keys():
+            item = report[key]
+            if report[key]['total_count'] is not None and report[key]['total_count'] > 0:
+                report[key]['average'] = report[key]['total_score'] / report[key]['total_count']
+        
+        return render(request,'evaluation/report.html',{"target":target, "evaluations":evaluations, "report":report})
+    else:
+        raise Http404('Not found!')

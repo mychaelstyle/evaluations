@@ -7,11 +7,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="robots" content="noindex">
-  <meta name="googlebot" content="noindex">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}</title>
+  <title>{{request.user}}さんのマイページ - {% trans 'site_title' %}</title>
 
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
@@ -22,32 +19,72 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'admin-lte/dist/css/adminlte.min.css' %}">
   <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">  
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  
+</head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_ID}}"></script>
 {% if GOOGLE_ANALYTICS_ID %}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_ID}}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+
   gtag('config', '{{GOOGLE_ANALYTICS_ID}}');
 </script>
 {% endif %}
-</head>
-<body class="layout-boxed">
-<div class="wrapper align-items-center" style="max-width:800px;">
-    <div class="content-wrapper align-items-center">
-        {% block content %}
-        {% endblock %}
+<body class="hold-transition fixed layout-top-nav">
+<div class="wrapper">
+  {% include 'navbar.html' %}
+  <div class="content-wrapper">
+    <div class="content-fluid login-page mt-0 pt-0">
+      <div class="login-box">
+        <div class="card">
+          <div class="card-body login-card-body">
+            <p class="login-box-msg">
+              GitHubかFacebookで<br>
+              新規登録・ログインすると<br>
+              複数の目標設定と評価を蓄積できます<br>
+            </p>
+            <div class="social-auth-links text-center mb-3">
+              <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-block btn-primary">
+                <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+              </a>
+              <p>- OR -</p>
+              <a href="{% url 'social:begin' 'github' %}" class="btn btn-block btn-secondary">
+                <i class="fab fa-github mr-2"></i> Sign in using GitHub
+              </a>
+              <p>- OR - </p>
+              <a href="{% url 'social:begin' 'linkedin-oauth2' %}" class="btn btn-block btn-primary">
+                <i class="fa-brands fa-linkedin"></i> Sign in using Linkedin
+              </a>
+            </div>
+            <!-- /.social-auth-links -->
+          </div>
+          <!-- /.login-card-body -->
+        </div>
+      </div>
+
     </div>
-    <!-- ./content-wrapper -->
+  </div>  
 </div>
-<!-- ./wrapper -->
+<!-- /.content-wrapper -->
+
+<!-- Main Footer -->
+<footer class="main-footer">
+  <!-- To the right -->
+  <div class="float-right d-none d-sm-inline">
+    
+  </div>
+  <!-- Default to the left -->
+  <strong>Copyright &copy; 2022- Masanori Nakashima <a href="https://twitter.com/haruchaco" target="_blank"><i class="fa-brands fa-twitter"></i></a>.</strong> All rights reserved.
+</footer>
 
 {% block compornents %}
 {% endblock %}  
+</div>
+<!-- ./wrapper -->
+
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->

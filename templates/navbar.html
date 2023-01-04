@@ -1,0 +1,36 @@
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white sticky-top">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <span class="brand-text font-weight-light">{% trans 'site_title' %}</span>
+      </a>
+      {% include 'components/searchform.html' %}
+      <!-- Right navbar links -->
+      <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+        <li class="nav-item">
+            <a href="{% url 'mypage' %}" class="nav-link" title="マイページ">
+                <i class="fa-solid fa-user" title="マイページ"></i>
+            </a>
+        </li>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}" title="ログアウト">
+            <i class="fa-solid fa-right-from-bracket" title="ログアウト"></i>
+          </a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" data-widget="control-sidebar" href="#" id="open-csidebar" title="選択済み項目">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <span class="badge badge-danger navbar-badge added-number" title="選択済み項目"></span>
+            </a>
+        </li>
+  
+      </ul>
+    </div>
+  </nav>
+  <!-- /.navbar -->

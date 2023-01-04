@@ -26,7 +26,6 @@ def create(request):
     res = CommonJsonResponse(request)
     if request.method.lower() == "post":
         for m in messages.get_messages(request):
-            print(m)
             pass
         data = json.loads(request.body)
         if 'passcode' in data and len(data['passcode']) > 0:
@@ -71,13 +70,17 @@ def create(request):
                 # 作成者のuuidを作成
                 creator_id = get_anonymous(request)
                 target.creator_id = creator_id
+                if request.user.is_authenticated:
+                    target.user = request.user
                 target.save()
                 target_dict = model_to_dict(target)
                 target_dict['uuid'] = target.uuid
                 target_dict['items'] = item_objects
                 print(target.uuid)
                 res.set_data(target_dict)
-                return res.get().set_cookie("euuid",str(creator_id))
+                response = res.get()
+                response.set_cookie("euuid",str(creator_id))
+                return response
         except Exception as e:
             res.add_message(e)
             return res.get()
@@ -126,7 +129,9 @@ def self_evaluation(request,id):
         item.save()
         
         res.set_data(item)
-        return res.get().set_cookie('euuid',item.target.creator_id)
+        response = res.get()
+        response.set_cookie('euuid',item.target.creator_id)
+        return response
 
 def action_progress(request,id):
     """自己評価の更新

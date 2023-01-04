@@ -1,13 +1,21 @@
-{% extends 'simple.html' %}
+{% extends 'top.html' %}
 {% load static %}
 {% load i18n %}
 {% load mathfilters %}
 {% block content %}
     <!-- Content Header (Page header) -->
-    <div class="content-header show" id="howtouse">
-        <div class="container-fluid">
+    <div class="content-header">
+      <div class="row">
+        <div class="col col-md-12 text-right small pr-3 pb-1">
+          <a href="#" data-toggle="collapse"
+          data-target="#howtouse" aria-controls="howtouse" aria-expanded="true">
+            <i class="fa-solid fa-square-minus"></i> 説明を折りたたむ
+          </a>
+        </div>
+      </div>
+      <div class="container-fluid show" id="howtouse">
           <div class="row" style="display:flex;flex-wrap:wrap;">
-            <div class="col col-md-6" style="display:flex;flex-wrap:wrap;">
+            <div class="col col-md-6" style="display:flex;flex-wrap:wrap;min-width:350px;">
               <div class="card card-default">
                 <div class="card-header">
                   <h3 class="card-title">
@@ -40,7 +48,7 @@
                 <!-- /.card-body -->
               </div>
             </div>
-            <div class="col col-md-6" style="display:flex;flex-wrap:wrap;">
+            <div class="col col-md-6" style="display:flex;flex-wrap:wrap;min-width:350px;">
               <div class="card card-default">
                 <div class="card-header">
                   <h3 class="card-title">
@@ -76,14 +84,6 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col col-md-12 text-right small pr-2">
-              <a href="#" data-toggle="collapse"
-              data-target="#howtouse" aria-controls="howtouse" aria-expanded="true">
-                <i class="fa-solid fa-square-minus"></i> 説明を折りたたむ
-              </a>
-            </div>
-          </div>
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -103,108 +103,8 @@
 {% endblock %}
 
 {% block compornents %}
-<aside class="control-sidebar control-sidebar-light sticky-top" id="cust_sidebar" style="width:400px;">
-    <div class="p-3">
-      <h5>目標設定シートの作成</h5>
-      <form name="target-create-form" id="target-create-form" action="{% url 'api-target-create' %}" method="post">
-        {% csrf_token %}
-        <div class="row form-group">
-          <input type="text" name="viewname" id="target-viewname" class="form-control" placeholder="目標のタイトル（必須）">
-          <div class="invalid-feedback" id="feedback-viewname"></div>
-        </div>
-        <div class="row form-group">
-          <input type="text" name="description" id="target-description" class="form-control" placeholder="目標ので目指す姿（任意）">
-          <div class="invalid-feedback" id="feedback-description"></div>
-        </div>
-        <hr>
-        <div id="target-items">
-        </div>
-        <div class="invalid-feedback" id="feedback-items"></div>
-        <hr>
-        <div class="row form-group">
-          <div class="col">
-            <label for="industory">姓</label>
-            <input name="last_name" id="target-last_name" type="text" class="form-control" placeholder="姓（任意）">
-            <div class="invalid-feedback" id="feedback-last_name"></div>
-          </div>
-          <div class="col">
-            <label for="industory">名</label>
-            <input name="first_name" id="target-first_name" type="text" class="form-control" placeholder="名（任意）">
-            <div class="invalid-feedback" id="feedback-first_name"></div>
-          </div>
-        </div>
-        <div class="row form-group">
-          <div class="col">
-            <label for="industory">業界・業種</label>
-            {{request.target_create_form.industory}}
-          </div>
-          <div class="col">
-            <label for="target-industory_opt">業界・業種（その他）</label>
-            <input name="industory_opt" id="target-industory_opt" type="text" class="form-control" placeholder="分類にない業界を入力">
-            <div class="invalid-feedback" id="feedback-industory_opt"></div>
-          </div>
-        </div>
-        <div class="row form-group">
-          <div class="col">
-            <label for="job">職種</label>
-            <input name="job" id="target-job" type="text" class="form-control" placeholder="例）スーパーバイザー">
-            <div class="invalid-feedback" id="feedback-position"></div>
-          </div>
-          <div class="col">
-            <label for="grade">グレード</label>
-            {{request.target_create_form.grade}}
-            <div class="invalid-feedback" id="feedback-grade"></div>
-          </div>
-        </div>
-        <div class="row form-group">
-          <div class="col">
-            <label for="target-position">肩書き(任意)</label>
-            <input name="position" id="target-position" type="text" class="form-control" placeholder="例）係長・チームリーダー">
-            <div class="invalid-feedback" id="feedback-position"></div>
-          </div>
-          <div class="col">
-            <label for="target-role">役割(任意)</label>
-            <input name="role" id="target-role" type="text" class="form-control" placeholder="例）ユーザーのサポート窓口">
-            <div class="invalid-feedback" id="feedback-role"></div>
-          </div>
-        </div>
-        <div class="row form-group">
-          <div class="col">
-            <label for="target-org_name">会社名(任意)</label>
-            <input name="org_name" id="target-org_name" type="text" class="form-control" placeholder="会社名">
-            <div class="invalid-feedback" id="feedback-org_name"></div>
-          </div>
-          <div class="col">
-            <label for="target-department_name">部門・部署名(任意)</label>
-            <input name="department_name" id="target-department_name" type="text" class="form-control" placeholder="例）○○事業部 開発チーム">
-            <div class="invalid-feedback" id="feedback-department_name"></div>
-          </div>
-        </div>
-        <div class="row form-group">
-          <div class="col">
-            <label for="target-org_url">組織URL(任意)</label>
-            <input name="org_url" id="target-org_url" type="text" class="form-control" placeholder="https://example.com">
-            <div class="invalid-feedback" id="feedback-org_url"></div>
-          </div>
-          <div class="col">
-            <label for="target-passcode">パスコード(任意)</label>
-            <input name="passcode" id="target-passcode" type="password" class="form-control" placeholder="編集用パスコード">
-            <div class="invalid-feedback" id="feedback-passcode"></div>
-          </div>
-        </div>
-        <div class="row small p-3">
-          ※ 会員登録などはされません。<br>
-          ※ 目標設定シートを作成するとUUIDでユニークな目標設定シートURLが発行され、いつでもweb上で見直すことができます。<br>
-          ※ UUID付きのURLは意図せず拡散されないように自己責任・自己管理するようお願いします。<br>
-        </div>
-        <div id="target-create-messages" class="alert alert-danger" style="display:none;"></div>
-        <div class="row form-group">
-          <button type="button" class="btn btn-primary btn-lg btn-block" id="target-create-button"><span class="small">目標設定シートを作成する</span></button>
-        </div>
-      </form>
-    </div>
-  </aside>
 
+{% include 'components/sidebar_selected.html' %}
   <div class="col-md-4" id="template-card" style="displpay:noe;">
     <div class="card card-primary card-outline">
         <div class="card-header">
@@ -225,135 +125,31 @@
 
 {% block scripts %}
 <script>
-var LAST_WORDS = "";
-var ALL_TASKS = {};
-var ALL_ITEMS = {}
-var PAGEINFO = {};
-var PAGE_LOADING = 0;
-var SELECTED = {};
 var LAST_SCROLL = 0;
-var get_page = function(page) {
-    url = '{% url 'api-tasks' %}';
-    $.ajax({
-        url : url,
-        type : "GET",
-        dataType : 'json',
-        data : {
-            q : LAST_WORDS,
-            perpage : 18,
-            page : page
-        }
-    }).done(function(data){
-        if('OK' != data['result']){
-            alert('error');
-            return;
-        }
-        PAGEINFO = data.pageinfo;
-        $('#total-count').text(data.pageinfo.count);
-        for(let num=0; num < data.data.length; ++num){
-            ALL_TASKS[data.data[num].code] = data.data[num];
-            var card = $('#template-card').clone();
-            idstr = 'card-' + data.data[num].id;
-            taskcode = data.data[num].code;
-            card.attr('id',idstr);
-            card.appendTo('#search-results');
-            card.show();
-            parent = data.data[num].parent;
-            root = data.data[num].parent.parent;
-            $('#'+idstr+' .task-tree').text(root.name + ' -> ' + parent.name);
-            $('#'+idstr+' .card-title').text(data.data[num].name);
-            for(let i=0; i<data.data[num].items.length; ++i){
-                item = data.data[num].items[i];
-                ALL_ITEMS[item.code] = item;
-                str = item.name.replace(LAST_WORDS,"<span class='text-danger'>"+LAST_WORDS+"</span>");
-                tr = "<tr><td class='small'>" + str
-                    + "</td><td class='small'><button class='btn btn-primary btn-sm text-nowrap btn-item-select' data-id='"
-                    + item.code + "' id='select-btn-" + item.id + "' task-code='" + taskcode + "'>選択</button></td></tr>";
-                li = '<li class="nav-item"><a href="#" class="nav-link">'+str+' <span class="float-right badge bg-primary">追加</span></a></li>';
-                $('#'+idstr+' .task-items').append(tr);
-                $('#'+idstr+' .task-evaluation-items').append(li);
-                add_select_action('#select-btn-'+item.id);
-            }
-            for(let i=0; i<data.data[num].profiles.length; ++i){
-                profile = data.data[num].profiles[i];
-                badge = '<span class="badge badge-secondary">'+profile.name+'</span> '
-                $('#'+idstr+' .card-footer').append(badge);
-            }
-        }
-    }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-        alert(textStatus);
-    });
-
-}
-var search = function(query) {
-    if( LAST_WORDS != "" && query == LAST_WORDS ){
-        return;
-    }
-    if( query != "" ){
-      const address = new URL(window.location);
-      address.searchParams.set('q', query);
-      history.replaceState("", "", address.toString());
-    }
-    $('#search-results').empty();
-    ALL_TASKS = {};
-    LAST_WORDS = query;
-    get_page(1);
-}
-var add_select_action = function(id){
-    $(id).on('click',function(e){
-        console.log(SELECTED);
-        itemCode = $(this).attr('data-id');
-        taskCode = $(this).attr('task-code');
-        item = ALL_ITEMS[itemCode];
-        task = ALL_TASKS[taskCode];
-        item.parent = task;
-        if(itemCode in SELECTED){
-        } else {
-            SELECTED[itemCode] = item;
-            row = '<div class="card card-outline card-primary">'
-                    + '<div class="card-header small"><div class="card-title"><span class="small">'
-                        + task.name
-                        + '</span></div><div class="card-tools">'
-                            +'<button type="button" class="btn btn-tool" data-card-widget="remove" id="item-remove-'+item.id
-                            +'" item-code="'+itemCode
-                            +'" task-code="'+taskCode
-                            +'"><i class="fas fa-times"></i></button></div>'
-                    + '</div>'
-                    + '<div class="card-body small p-2">'
-                        + item.name
-                    + "</div>"
-                + "</div>";
-            $('#target-items').append(row);
-            $('#item-remove-'+item.id).on('click',function(e){
-                itemCode = $(this).attr('item-code');
-                taskCode = $(this).attr('task-code');
-                delete SELECTED[itemCode];
-                console.log(SELECTED);
-            });
-        }
-        $('.added-number').text(Object.keys(SELECTED).length);
-        $('.control-sidebar').addClass('active');
-        var get_class = $("body").attr('class');
-        if (get_class == "fixed layout-top-nav control-sidebar-slide-open") {
-            //$('body').removeClass('control-sidebar-open');
-        } else {
-            $('#open-csidebar').click();
-        }
-    });
-}
 $(function () {
+
     $('#template-card').hide();
+    show_selected_items('#target-items','.added-number');
+
     const address = new URL(window.location);
     $('#search-query').val(address.searchParams.get('q'));
     search($('#search-query').val());
+
     $('#search-query').keypress(function(e){
         if (e.keyCode == 13) {
             search($(this).val());
         }
     });
+
     $('.search-exec').on('click',function(e){
         search($("#search-query").val());
     });
+
+    $('#word-search-form').submit(function(e){
+      search($("#search-query").val());
+      return false;
+    });
+
     $(window).on("scroll", function() {
         if(PAGEINFO.page){
         } else {
@@ -373,6 +169,7 @@ $(function () {
             get_page(PAGE_LOADING);
         }
     });
+
     $('#open-csidebar').on('click',function(e){
       var get_class = $("body").attr('class');
       if (get_class == "fixed layout-top-nav control-sidebar-slide-open") {
@@ -382,55 +179,18 @@ $(function () {
         $(window).scrollTop(0);
       }
     });
+
     $('#target-create-button').on('click',function(e){
-        data = form2json('#target-create-form');
-        document.cookie = 'first_name=' + encodeURIComponent(data['first_name']);
-        document.cookie = 'last_name=' + encodeURIComponent(data['last_name']);
-        document.cookie = 'org_name=' + encodeURIComponent(data['org_name']);
-        document.cookie = 'department_name=' + encodeURIComponent(data['department_name']);
-        document.cookie = 'industory=' + encodeURIComponent(data['industory']);
-        document.cookie = 'industory_opt=' + encodeURIComponent(data['industory_opt']);
-        document.cookie = 'position=' + encodeURIComponent(data['position']);
-        document.cookie = 'job=' + encodeURIComponent(data['job']);
-        document.cookie = 'role=' + encodeURIComponent(data['role']);
-        document.cookie = 'grade=' + encodeURIComponent(data['grade']);
-        url = '{% url 'api-target-create' %}';
-        item_ids = [];
-        for (const [key, value] of Object.entries(SELECTED)) {
-          item_ids.push(value.id);
-        }
-        data.items = item_ids;
-        console.log(data);
-        data2api(url,'POST',data,function(data){
-          if(data['result']=='NG'){
-            for (const [key, value] of Object.entries(data['messages'])) {
-              $('#target-create-messages').text($('#target-create-messages').text() + value);
-              $('#target-create-messages').show();
-            }
-            for (const [key, value] of Object.entries(data['field_errors'])) {
-              divname = '#feedback-' + key;
-              inputname = '#target-' + key;
-              $(inputname).addClass('is-invalid');
-              for (idx = 0; idx < value.length; idx++) {
-                $(divname).text($(divname).text()+value[idx]);
-              }
-            }
-          } else {
-            console.log(data);
-            url = '/target/' + data['data']['uuid'];
-            window.location.href = url;
-          }
-        },function(XMLHttpRequest, textStatus, errorThrown){
-          alert(errorThrown);
-        });
-      });
-      const cookies = document.cookie;
-      const array = cookies.split(';');
-      array.forEach(function(value) {
+        create_target('#target-create-form');
+    });
+
+    const cookies = document.cookie;
+    const array = cookies.split(';');
+    array.forEach(function(value) {
         const content = value.split('=');
         key = '#target-' + content[0].trim();
         $(key).val(decodeURIComponent(content[1]));
-      })
+    })
     
 })
 </script>

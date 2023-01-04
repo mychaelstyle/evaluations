@@ -1,65 +1,10 @@
 from django.db import models
 from django_boost.models.mixins import LogicalDeletionMixin
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from uuid import uuid4
 
 from competency.models import TaskEvaluationItem
-
-GRADES = [
-    (0, _("students")),
-    (1, _("new_graduates")),
-    (5, _("juniors")),
-    (10, _("regular_members")),
-    (15, _("team_leaders")),
-    (20, _("managers")),
-    (25, _("heads_of_section")),
-    (30, _("board_members"))
-]
-
-INDUSTORIES = (
-    (1,"メーカー：食品・農林・水産"),
-    (11,"メーカー：建設・住宅・インテリア"),
-    (21,"メーカー：遷移・化学・薬品・化粧品"),
-    (31,"メーカー：鉄鋼・金属・鉱業"),
-    (41,"メーカー：機械・プラント"),
-    (51,"メーカー：電子・電気機器"),
-    (61,"メーカー：自動車・輸送容器機"),
-    (71,"メーカー：精密・医療機器"),
-    (81,"メーカー：飲茶靴・事務機器関連"),
-    (91,"メーカー：スポーツ・玩具"),
-    (101,"メーカー：その他メーカー"),
-    (111,"商社：総合商社"),
-    (121,"商社：専門商社"),
-    (131,"小売：百貨店・スーパー"),
-    (141,"小売：コンビニ"),
-    (151,"小売：専門店"),
-    (161,"金融：銀行・証券"),
-    (171,"金融：クレジット"),
-    (181,"金融：信販・リース"),
-    (191,"金融：その他金融"),
-    (201,"金融：生保・損保"),
-    (211,"サービス・インフラ：不動産"),
-    (221,"サービス・インフラ：鉄道・航空・運輸・物流"),
-    (231,"サービス・インフラ：電力・ガス・エネルギー"),
-    (241,"サービス・インフラ：フードサービス"),
-    (251,"サービス・インフラ：ホテル・旅行"),
-    (261,"サービス・インフラ：医療・福祉"),
-    (271,"サービス・インフラ：アミューズメント・レジャー"),
-    (281,"サービス・インフラ：その他サービス"),
-    (291,"サービス・インフラ：コンサルティング・調査"),
-    (301,"サービス・インフラ：人材サービス"),
-    (311,"サービス・インフラ：教育"),
-    (321,"ソフトウェア：ソフトウェア"),
-    (331,"ソフトウェア：インターネット"),
-    (341,"ソフトウェア：通信"),
-    (351,"広告・出版・マスコミ：放送"),
-    (361,"広告・出版・マスコミ：新聞"),
-    (371,"広告・出版・マスコミ：出版"),
-    (381,"広告・出版・マスコミ：広告"),
-    (391,"官公庁・公社・団体：公社・団体"),
-    (401,"官公庁・公社・団体：官公庁"),
-    (999,_("others"))
-)
 
 ACTION_TYPES = (
     (0,_("on_the_job")),
@@ -118,6 +63,7 @@ class Target(BaseModel):
     """
     uuid = models.UUIDField(verbose_name=_("UUID"),default=uuid4, editable=False, unique=True, db_index=True)
     creator_id = models.CharField(verbose_name=_('creator_uuid'), max_length=50, null=True, blank=True, db_index=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,verbose_name=_("user"),related_name="targets", null=True, blank=True)
     passcode = models.CharField(verbose_name=_("passcode"), null=True, blank=True, max_length=255)
     viewcode = models.CharField(verbose_name=_("viewcode"), null=True, blank=True, max_length=255)
     is_open = models.BooleanField(verbose_name=_("is_open"), null=False, blank=False, default=True)
@@ -125,8 +71,8 @@ class Target(BaseModel):
     first_name = models.CharField(verbose_name=_("first_name"),max_length=100,null=True,blank=True)
     last_name = models.CharField(verbose_name=_("last_name"),max_length=100,null=True,blank=True)
     target_date = models.DateField(verbose_name=_("target_date"), null=True, blank=True)
-    grade = models.SmallIntegerField(verbose_name=_("grade"),choices=GRADES, null=True, blank=True)
-    industory = models.PositiveSmallIntegerField(verbose_name=_("organization_name"), null=True, blank=True, choices=INDUSTORIES)
+    grade = models.SmallIntegerField(verbose_name=_("grade"),choices=settings.GRADES, null=True, blank=True)
+    industory = models.PositiveSmallIntegerField(verbose_name=_("organization_name"), null=True, blank=True, choices=settings.INDUSTORIES)
     industory_opt = models.CharField(verbose_name=_("industry_optional"), max_length=50, null=True, blank=True)
     org_name = models.CharField(verbose_name=_("organization_name"), max_length=200, null=True, blank=True)
     org_url = models.CharField(verbose_name=_("organization_url"), max_length=255, null=True, blank=True)
@@ -170,14 +116,15 @@ class Evaluation(BaseModel):
     """
     uuid = models.UUIDField(verbose_name=_("UUID"),default=uuid4, editable=False, unique=True, db_index=True)
     evaluator_id = models.CharField(verbose_name=_('evaluator_uuid'), max_length=50, null=True, blank=True, db_index=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,verbose_name=_("user"),related_name="evaluations", null=True, blank=True)
     target = models.ForeignKey(Target, verbose_name=_("target"),null=False,
                             db_index=True,blank=False,on_delete=models.CASCADE,related_name="evaluations")
     passcode = models.CharField(verbose_name=_("passcode"), null=True, blank=True, max_length=255)
     status = models.PositiveSmallIntegerField(verbose_name=_("status"), null=False, blank=False, default=0, choices=EVALUATION_STATUSES)
     first_name = models.CharField(verbose_name=_("first_name"),max_length=100,null=True,blank=True)
     last_name = models.CharField(verbose_name=_("last_name"),max_length=100,null=True,blank=True)
-    grade = models.SmallIntegerField(verbose_name=_("grade"),choices=GRADES, null=True, blank=True)
-    industory = models.PositiveSmallIntegerField(verbose_name=_("organization_name"), null=True, blank=True, choices=INDUSTORIES)
+    grade = models.SmallIntegerField(verbose_name=_("grade"),choices=settings.GRADES, null=True, blank=True)
+    industory = models.PositiveSmallIntegerField(verbose_name=_("organization_name"), null=True, blank=True, choices=settings.INDUSTORIES)
     industory_opt = models.CharField(verbose_name=_("industry_optional"), max_length=50, null=True, blank=True)
     org_name = models.CharField(verbose_name=_("organization_name"), max_length=200, null=True, blank=True)
     org_url = models.CharField(verbose_name=_("organization_url"), max_length=255, null=True, blank=True)

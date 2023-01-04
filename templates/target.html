@@ -1,41 +1,9 @@
+{% extends 'simple.html' %}
 {% load static %}
 {% load i18n %}
 {% load mathfilters %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="robots" content="noindex">
-  <meta name="googlebot" content="noindex">
 
-  <title>{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}</title>
-
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{% static 'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'admin-lte/dist/css/adminlte.min.css' %}">
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  
-</head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{GOOGLE_ANALYTICS_ID}}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '{{GOOGLE_ANALYTICS_ID}}');
-</script>
-<body class="hold-transition fixed layout-top-nav">
-<div class="wrapper">
-
+{% block content %}
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -52,7 +20,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-sm-6 pt-2 d-none d-sm-block">
+                                <div id="top-qr-code" class="text-center p-1"
+                                    style="background-color:#FFFFFF;border:solid 3px #ffffff;width:105px;heght:100px;"></div>
+                            </div>
+                            <div class="col-sm-6">
                                 <h5 class="widget-user-desc text-right">
                                     {% if target.industory %}{{target.get_industory_display}}{% endif %}
                                     {% if target.industory_opt %}{{target.industory_opt}}{% endif %}
@@ -62,11 +34,12 @@
                                     {% if target.role %}{{target.role}}{% endif %}
                                     {% if target.grade %}{{target.get_grade_display}}{% endif %}
                                 </h5>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-12">
-                                {{target.description}}
+                                <div class="text-right" style="color:#ffffff;">
+                                    {{target.description}}
+                                </div>
+                                <div class="text-right" style="color:#ffffff;">
+                                    {{target.created_at}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -120,30 +93,45 @@
                 {% if messages %}
                 <div class="row">
                     {% for message in messages %}
-                    <div class="col col-md-12 alert alert-danger" role="alert">
+                    <div class="col col-sm-12 alert alert-danger" role="alert">
                         {{ message }}
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
-                <div class="row">
-                    <div class="col col-md-4 text-left text-nowrap">
-                        作成：{{target.created_at}}
+
+                
+                {% if authenticated %}
+                <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        {% if request.user.is_authenticated %}
+                        {% else %}
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-primary btn-sm btn-block text-nowrap btn-facebook-login">
+                                <i class="fa-brands fa-facebook"></i> Facebookログイン
+                            </a>
+                        </div>
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'github' %}" class="btn btn-secondary btn-sm btn-block text-nowrap btn-github-login">
+                                <i class="fa-brands fa-github"></i> GitHubログイン
+                            </a>
+                        </div>
+                        <div class="col p-1">
+                            <a href="{% url 'social:begin' 'linkedin-oauth2' %}" class="btn btn-block btn-primary btn-sm btn-block text-nowrap btn-linkedin-login">
+                                <i class="fa-brands fa-linkedin"></i> Linkedinログイン
+                            </a>
+                        </div>
+                        {% endif %}
+                        <div class="col p-1">
+                            <button type="submit" class="btn btn-danger btn-block btn-sm text-nowrap"><i class="fa-solid fa-xmark"></i> 編集を終了</button>
+                        </div>
                     </div>
-                    <div class="col col-md-8 text-right pb-3">
+                </form>
+                {% endif %}
+                <div class="row">
+                    <div class="col col-md-12 text-right pb-3" style="min-width:350px;">
                         {% if authenticated %}
-                        <form name="auth-passcode" method="post" action="{% url 'exit-authenticated' target.uuid %}">
-                            {% csrf_token %}
-                            <button class="btn btn-success btn-sm btn-request-evaluation" data-toggle="modal" data-target="#modal-request-evaluation" type="button">
-                                <i class="fa-solid fa-user"></i> 新規に評価を依頼する
-                            </button>
-
-                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create-action" type="button">
-                                <i class="fa fa-plus-square"></i> 目標に対する行動目標を追加
-                            </button>
-
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i> 編集を終了する</button>
-                        </form>
                         {% else %}
                         <form name="auth-passcode" method="post" action="{% url 'auth-passcode' target.uuid %}">
                             {% csrf_token %}
@@ -153,110 +141,235 @@
                         {% endif %}
                     </div>
                 </div>
-                {% for key, task in tasks.items %}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-outline card-success">
-                            <div class="card-header">
-                                <h3 class="card-title">{{task.task.parent.parent.name}} -> {{task.task.parent.name}} -> {{task.task.name}}</h3>
-                                <div class="card-tools">
-                                    <button class="float-right btn btn-success btn-sm" type="button" data-toggle="collapse"
-                                    data-target="#related-skills-{{task.task.id}}" aria-expanded="false"
-                                    aria-controls="related-skills-{{task.task.id}}">関連スキル・知識を見る</button>
+
+
+
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <a class="nav-item nav-link active" id="nav-home-tab"
+                            data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">目標設定</a>
+                      <a class="nav-item nav-link" id="nav-profile-tab"
+                            data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">評価依頼</a>
+                      <a class="nav-item nav-link" id="nav-contact-tab"
+                            data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">レポート</a>
+                    </div>
+                  </nav>
+                  <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div class="row pull-right text-right">
+                            <div class="col p-3">
+                                <button class="btn btn-success btn-sm text-nowrap" data-toggle="modal" data-target="#modal-create-action" type="button">
+                                    <i class="fa fa-plus-square"></i> 行動目標を追加
+                                </button>
+                            </div>
+                        </div>
+
+                        {% for key, task in tasks.items %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-outline card-success">
+                                    <div class="card-header">
+                                        <h3 class="card-title">{{task.task.parent.parent.name}} -> {{task.task.parent.name}} -> {{task.task.name}}</h3>
+                                        <div class="card-tools">
+                                            <button class="float-right btn btn-success btn-sm" type="button" data-toggle="collapse"
+                                            data-target="#related-skills-{{task.task.id}}" aria-expanded="false"
+                                            aria-controls="related-skills-{{task.task.id}}">関連スキル・知識を見る</button>
+                                        </div>
+                                        <!-- /.card-tools -->
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body p-2">
+                                        {% for item_relation in task.items %}
+                                        <div class="row p-3">
+                                            <div class="col-md-1 p-1 font-weight-bold text-nowrap">
+                                                {{item_relation.item.code}}
+                                            </div>
+                                            <div class="col-md-9 p-1 font-weight-bold">
+                                                <div class="">
+                                                    {{item_relation.item.name}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                {% if authenticated %}
+                                                <div class="form-row d-flex">
+                                                    <div class="col-auto">
+                                                        <label for="self-evaluation-{{item_relation.id}}">自己評価</label>
+                                                        <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
+                                                            id="self-evaluation-{{item_relation.id}}"
+                                                            evaluation-id="{{item_relation.id}}"
+                                                            name="self-evaluation"
+                                                            value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
+                                                            origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
+                                                    </div>
+                                                    <div class="col-auto">
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                <div class="progress progress-s">
+                                                    <div class="progress-bar bg-success" style="width: {{item_relation.self_evaluation}}%">{{item_relation.self_evaluation}}</div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% for action in item_relation.actions.all %}
+                                        <div class="row p-1 pl-5">
+                                            <div class="col-md-10 text-left">
+                                                {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
+                                                    {{action.name}}
+                                                {% if action.url %}</a>{% endif %}
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                {% if authenticated %}
+                                                <div class="form-row d-flex">
+                                                    <div class="col-auto">
+                                                        <label for="self-evaluation-action-{{action.id}}">進捗率</label>
+                                                        <input type="range" class="multi-range action-progress" min="0" max="100" step="20"
+                                                            id="self-evaluation-action-{{action.id}}"
+                                                            action-id="{{action.id}}"
+                                                            name="progress"
+                                                            value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}"
+                                                            origin-value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}">
+                                                    </div>
+                                                    <div class="col-auto">
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                <div class="progress progress-xs w-75">
+                                                    <div class="progress-bar bg-info" style="width: {{action.progress}}%">{{action.progress}}%　</div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% endfor %}
+        
+                                    </div>
+                                    <!-- /.card-footer -->
+                                    <div class="card-body">
+                                        {% for profile in task.profiles %}
+                                        <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                            title="{{profile.description}}">{{profile.name}}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="card-body collapse" id="related-skills-{{task.task.id}}">
+                                        {% for skill in task.skills %}
+                                        <br>
+                                        <span class="badge badge-success" data-toggle="tooltip" data-placement="top"
+                                            title="{{skill.description}}">{{skill.name}}</span>
+                                            {% for knowledge in skill.knowledges.all %}
+                                            <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                            title="{{knowledge.description}}">{{knowledge.name}}</span>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                    <!-- /.card-body -->
                                 </div>
-                                <!-- /.card-tools -->
+                            </div>
+                        </div>
+                        {% endfor %}
+        
+
+
+
+                        
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+                        {% if authenticated %}
+                        <div class="row pull-right text-right">
+                            <div class="col p-3">
+                                <button class="btn btn-success btn-sm text-nowrap btn-request-evaluation" type="button">
+                                    <i class="fa-solid fa-user"></i> 新規に評価を依頼
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                              <h3 class="card-title">作成済みの評価依頼</h3>
+                              <div class="card-tools">
+                                {{target.evaluations.count}}件
+                              </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body p-2">
-                                {% for item_relation in task.items %}
-                                <div class="row p-3">
-                                    <div class="col-md-1 p-1 font-weight-bold text-nowrap">
-                                        {{item_relation.item.code}}
-                                    </div>
-                                    <div class="col-md-9 p-1 font-weight-bold">
-                                        <div class="">
-                                            {{item_relation.item.name}}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 text-right">
-                                        {% if authenticated %}
-                                        <div class="form-row d-flex">
-                                            <div class="col-auto">
-                                                <label for="self-evaluation-{{item_relation.id}}">自己評価</label>
-                                                <input type="range" class="multi-range self-evaluation" min="0" max="100" step="20"
-                                                    id="self-evaluation-{{item_relation.id}}"
-                                                    evaluation-id="{{item_relation.id}}"
-                                                    name="self-evaluation"
-                                                    value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}"
-                                                    origin-value="{% if item_relation.self_evaluation %}{{item_relation.self_evaluation}}{% else %}0{% endif %}">
+                            <div class="card-body p-0">
+                              
+                              <table class="table table-striped">
+                                <tbody>
+                                    {% for evaluation in target.evaluations.all %}
+                                        <td>
+                                            <div class="row">
+                                                <div class="col col-md-7">
+                                                    {% if evaluation.status == 100 %}
+                                                        {{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}
+                                                    {% else %}
+                                                    <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
+                                                        <input type="text" name="evaluation_url" class="form-control"
+                                                            value="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
+                                                        <div class="input-group-append">
+                                                            <button class="input-group-text btn-copy-evaluation-url"
+                                                                evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}">
+                                                                <i class="fa-solid fa-copy"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col col-md-2 text-nowrap">
+                                                    {{evaluation.due_date}}
+                                                </div>
+                                                <div class="col col-md-2">
+                                                    <div class="progress progress-xs">
+                                                        <div class="progress-bar progress-bar-danger" style="width: {{evaluation.status}}%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-1">
+                                                    {% if evaluation.status == 100 %}
+                                                    <span class="badge bg-secondary">{{evaluation.get_status_display}}</span>
+                                                    {% elif evaluation.status == 0 %}
+                                                    <span class="badge bg-primary">未使用</span>
+                                                    <button type="button" class="badge bg-success btn-show-request-qr-code"
+                                                        evaluation-url="{{ request.scheme }}://{{ request.get_host }}{% url "evaluation" evaluation.uuid %}"
+                                                        >QRコード</button>
+                                                    {% else %}
+                                                    <span class="badge bg-success">評価中</span>
+                                                    {% endif %}
+                                                </div>
                                             </div>
-                                            <div class="col-auto">
-                                            </div>
-                                        </div>
-                                        {% else %}
-                                        <div class="progress progress-s">
-                                            <div class="progress-bar bg-success" style="width: {{item_relation.self_evaluation}}%">{{item_relation.self_evaluation}}</div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% for action in item_relation.actions.all %}
-                                <div class="row p-1 pl-5">
-                                    <div class="col-md-10 text-left">
-                                        {% if action.url %}<a href="{{action.url}}" target="_blank">{% endif %}
-                                            {{action.name}}
-                                        {% if action.url %}</a>{% endif %}
-                                    </div>
-                                    <div class="col-md-2 text-right">
-                                        {% if authenticated %}
-                                        <div class="form-row d-flex">
-                                            <div class="col-auto">
-                                                <label for="self-evaluation-action-{{action.id}}">進捗率</label>
-                                                <input type="range" class="multi-range action-progress" min="0" max="100" step="20"
-                                                    id="self-evaluation-action-{{action.id}}"
-                                                    action-id="{{action.id}}"
-                                                    name="progress"
-                                                    value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}"
-                                                    origin-value="{% if action.progress %}{{action.progress}}{% else %}0{% endif %}">
-                                            </div>
-                                            <div class="col-auto">
-                                            </div>
-                                        </div>
-                                        {% else %}
-                                        <div class="progress progress-xs w-75">
-                                            <div class="progress-bar bg-info" style="width: {{action.progress}}%">{{action.progress}}%　</div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% endfor %}
-                                {% endfor %}
-
-                            </div>
-                            <!-- /.card-footer -->
-                            <div class="card-body">
-                                {% for profile in task.profiles %}
-                                <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
-                                    title="{{profile.description}}">{{profile.name}}</span>
-                                {% endfor %}
-                            </div>
-                            <div class="card-body collapse" id="related-skills-{{task.task.id}}">
-                                {% for skill in task.skills %}
-                                <br>
-                                <span class="badge badge-success" data-toggle="tooltip" data-placement="top"
-                                    title="{{skill.description}}">{{skill.name}}</span>
-                                    {% for knowledge in skill.knowledges.all %}
-                                    <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
-                                    title="{{knowledge.description}}">{{knowledge.name}}</span>
+                                        </td>
+                                    </tr>
                                     {% endfor %}
-                                {% endfor %}
+                                </tbody>
+                              </table>
                             </div>
                             <!-- /.card-body -->
-                        </div>
+                          </div>
+                          {% else %}
+                          <div class="row p-3">
+                              評価依頼をするにはパスコードを入力して認証してください。
+                          </div>
+                          {% endif %}
                     </div>
-                </div>
-                {% endfor %}
-                <hr>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        {% if authenticated %}
+                        <div class="row p-3">
+                            <a href="{{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}/report">
+                                {{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}/report
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="row p-3">
+                            レポートを見るにはパスコードを入力して認証してください。
+                        </div>
+                        {% endif %}
+                  </div>
+                  </div>
+
+
+
+
+
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-primary">
@@ -287,18 +400,10 @@
     </div>
     <!-- /. content-wrapper -->
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-        <!-- To the right -->
-        <div class="float-right d-none d-sm-inline">
-        </div>
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2022- <a href="https://twitter.com/haruchaco" target="_blank"><i class="fa-brands fa-twitter"></i></a>.</strong> All rights reserved.
-    </footer>
+{% endblock %}
 
-</div>
-<!-- /. wrapper -->
-
+{% block compornents %}
+{% include 'components/sidebar_selected.html' %}
 {% if authenticated %}
 <div class="modal" id="modal-request-evaluation">
     <div class="modal-dialog">
@@ -327,8 +432,14 @@
             <div class="row d-flex">
                 <div class="col col-md-12  d-flex align-items-center justify-content-center">
                     <div class="mx-auto">
-                        <input type="text" name="evaluation_url" id="evaluation-url" size="30" class="form-group"
-                            value="https://example.com/" disabled="disabled">
+                        <div class="input-group mb-3 text-nowrap" style="min-width:300px;">
+                            <input type="text" name="evaluation_url" class="form-control" id="qr-evaluation-url" value="https://example.com/">
+                            <div class="input-group-append">
+                                <button class="input-group-text" id="btn-qr-evaluation-url-copy">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -389,39 +500,55 @@
     </div>
 </div>
 <!-- ./modal-create-action -->
-
-
 {% endif %}
-<!-- REQUIRED SCRIPTS -->
+{% endblock %}
 
-<!-- jQuery -->
-<script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{% static 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- Select2 -->
-<script src="{% static 'admin-lte/plugins/select2/js/select2.full.min.js' %}"></script>
-<!-- Bootstrap4 Duallistbox -->
-<script src="{% static 'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
-<!-- InputMask -->
-<script src="{% static 'admin-lte/plugins/moment/moment-with-locales.min.js' %}"></script>
-<script src="{% static 'admin-lte/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
-<!-- Bootstrap Switch -->
-<script src="{% static 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
-<!-- qrcode.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- common -->
-<script src="{% static 'js/common.js' %}"></script>
+{% block scripts %}
 <script>
 var CSRF_TOKEN = '{{csrf_token}}';
+$(function(){
+    new QRCode(document.getElementById("top-qr-code"), {
+        text: "{{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}",
+        width: 90,
+        height: 90,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+});
 {% if authenticated %}
-var change_qrcode = function(){
-    url = $('#evaluation-url').val();
+var show_qr_modal = function(url){
+    $("#qr-evaluation-url").val(url);
     $("#evaluation-url-qrcode").text("");
     new QRCode(document.getElementById("evaluation-url-qrcode"), url);
+    $('#modal-request-evaluation').modal('show');
 }
 $(function(){
+    $("#btn-qr-evaluation-url-copy").click(function(e){
+        url = $("#qr-evaluation-url").val();
+        if (navigator.clipboard == undefined) {
+            window.clipboardData.setData("Text", url);
+        } else {
+            navigator.clipboard.writeText(url);
+        }
+    });
+
+    $('.btn-copy-evaluation-url').each(function(){
+        $(this).click(function(e){
+            url = $(this).attr("evaluation-url");
+            if (navigator.clipboard == undefined) {
+                window.clipboardData.setData("Text", url);
+            } else {
+                navigator.clipboard.writeText(url);
+            }
+        });
+    });
+    $('.btn-show-request-qr-code').each(function(){
+        $(this).click(function(e){
+            url = $(this).attr('evaluation-url');
+            show_qr_modal(url);
+        });
+    });
     $('.btn-request-evaluation').click(function(e){
         url = '{% url "request-evaluation" '000' %}';
         url = url.replace('000','{{target.uuid}}');
@@ -432,8 +559,7 @@ $(function(){
             if(data['result'] == 'OK'){
                 evaluation_url = '{% url "evaluation" '0000' %}';
                 evaluation_url = evaluation_url.replace('0000',data.data.uuid);
-                $('#evaluation-url').val('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
-                change_qrcode();
+                show_qr_modal('{{ request.scheme }}://{{ request.get_host }}' + evaluation_url);
             } else {
             }
         },function(XMLHttpRequest, textStatus, errorThrown){
@@ -498,13 +624,16 @@ $(function(){
             alert(errorThrown);
         });
     });
-
-    $("#evaluation-url").change(function(e){
-        change_qrcode();
-    });
-    change_qrcode();
+    show_selected_items('#target-items','.added-number');
+    const cookies = document.cookie;
+    console.log(cookies);
+    const array = cookies.split(';');
+    array.forEach(function(value) {
+        const content = value.split('=');
+        key = '#target-' + content[0].trim();
+        $(key).val(decodeURIComponent(content[1]));
+    })
 });
 {% endif %}
 </script>
-</body>
-</html>
+{% endblock %}

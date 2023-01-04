@@ -1,0 +1,71 @@
+{% extends 'simple.html' %}
+{% load static %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+
+<div class="content-header">
+    <div class="container">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0 text-dark"> {{request.user}}さん <small>マイページ</small></h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">トップ</a></li>
+            <li class="breadcrumb-item active">マイページ</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">これまでに作成した目標</h5>
+                        <p class="card-text">
+                            目標設定シートを新規作成するには<a href="/">トップページ</a>で項目を検索して選択し作成してください。
+                        </p>
+                        <ul class="list-group">
+                            {% for target in owned_targets %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'show-target' target.uuid %}" target="_blank">
+                                        {{target.viewname}}
+                                        -
+                                        {{target.description}}
+                                    </a>
+                                        {{target.created_at}}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block compornents %}
+{% include 'components/sidebar_selected.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    show_selected_items('#target-items','.added-number');
+    const cookies = document.cookie;
+    console.log(cookies);
+    const array = cookies.split(';');
+    array.forEach(function(value) {
+        const content = value.split('=');
+        key = '#target-' + content[0].trim();
+        $(key).val(decodeURIComponent(content[1]));
+    })
+});
+</script>
+{% endblock %}

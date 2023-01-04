@@ -22,6 +22,25 @@
             <br>
             <a href="{% url 'index' %}">目標設定シートを作成する</a>
         </p>
+        <p class="login-box-msg">
+            GitHubかFacebookで<br>
+            新規登録・ログインすると<br>
+            複数の目標設定と評価を蓄積できます<br>
+          </p>
+          <div class="social-auth-links text-center mb-3">
+            <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-block btn-primary">
+              <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+            </a>
+            <p>- OR -</p>
+            <a href="{% url 'social:begin' 'github' %}" class="btn btn-block btn-secondary">
+              <i class="fab fa-github mr-2"></i> Sign in using GitHub
+            </a>
+            <p>- OR - </p>
+            <a href="{% url 'social:begin' 'linkedin-oauth2' %}" class="btn btn-block btn-primary">
+              <i class="fa-brands fa-linkedin"></i> Sign in using Linkedin
+            </a>
+        </div>
+          <!-- /.social-auth-links -->
     </div>
 </div>
 {% endblock %}
@@ -30,29 +49,4 @@
 {% endblock %}  
 
 {% block scripts %}
-<script>
-$(function () {
-    $('#next-button').on('click',function(e){
-        data = form2json('#profile-setting-form');
-        document.cookie = 'first_name=' + encodeURIComponent(data['first_name']);
-        document.cookie = 'last_name=' + encodeURIComponent(data['last_name']);
-        document.cookie = 'org_name=' + encodeURIComponent(data['org_name']);
-        document.cookie = 'department_name=' + encodeURIComponent(data['department_name']);
-        document.cookie = 'industory=' + encodeURIComponent(data['industory']);
-        document.cookie = 'industory_opt=' + encodeURIComponent(data['industory_opt']);
-        document.cookie = 'position=' + encodeURIComponent(data['position']);
-        document.cookie = 'job=' + encodeURIComponent(data['job']);
-        document.cookie = 'role=' + encodeURIComponent(data['role']);
-        document.cookie = 'grade=' + encodeURIComponent(data['grade']);
-    });
-    const cookies = document.cookie;
-    const array = cookies.split(';');
-    array.forEach(function(value) {
-      const content = value.split('=');
-      key = '#evaluation-' + content[0].trim();
-      $(key).val(decodeURIComponent(content[1]));
-    })
-
-});
-</script>
 {% endblock %}

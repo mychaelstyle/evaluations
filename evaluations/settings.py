@@ -49,8 +49,10 @@ INSTALLED_APPS = [
     'stdimage',
     'adminlte3',
     'adminlte3_theme',
+    'account.apps.AccountConfig',
     'competency.apps.CompetencyConfig',
     'target.apps.TargetConfig',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'target.middlewares.TargetCreateFormMiddleware'
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'target.middlewares.TargetCreateFormMiddleware',
 ]
 
 ROOT_URLCONF = 'evaluations.urls'
@@ -80,7 +83,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'evaluations.context_processors.site_common_texts'
+                'evaluations.context_processors.site_common_texts',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -164,4 +169,91 @@ CACHES = {
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
+# User model
+AUTH_USER_MODEL = 'account.User'
 
+# Login
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/account/mypage'
+LOGOUT_REDIRECT_URL='/'
+
+AUTHENTICATION_BACKENDS = (
+    #'social_core.backends.open_id.OpenIdAuth',
+    #'social_core.backends.google.GoogleOpenId',
+    #'social_core.backends.google.GoogleOAuth2',
+
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.linkedin.LinkedinOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# ソーシャルログインキー/シークレット
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')  # クライアントID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET') # クライアント シークレット
+SOCIAL_AUTH_FACEBOOK_KEY = env('SOCIAL_AUTH_FACEBOOK_KEY')  # アプリID
+SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')  # app secret
+SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY') # Consumer Key
+SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET') # Consumer Secret
+SOCIAL_AUTH_GITHUB_KEY = env('SOCIAL_AUTH_GITHUB_KEY') # Client ID
+SOCIAL_AUTH_GITHUB_SECRET = env('SOCIAL_AUTH_GITHUB_SECRET') # Client Secret
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = env('SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = env('SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET')
+
+INDUSTORIES = (
+    (1,"メーカー：食品・農林・水産"),
+    (11,"メーカー：建設・住宅・インテリア"),
+    (21,"メーカー：遷移・化学・薬品・化粧品"),
+    (31,"メーカー：鉄鋼・金属・鉱業"),
+    (41,"メーカー：機械・プラント"),
+    (51,"メーカー：電子・電気機器"),
+    (61,"メーカー：自動車・輸送容器機"),
+    (71,"メーカー：精密・医療機器"),
+    (81,"メーカー：飲茶靴・事務機器関連"),
+    (91,"メーカー：スポーツ・玩具"),
+    (101,"メーカー：その他メーカー"),
+    (111,"商社：総合商社"),
+    (121,"商社：専門商社"),
+    (131,"小売：百貨店・スーパー"),
+    (141,"小売：コンビニ"),
+    (151,"小売：専門店"),
+    (161,"金融：銀行・証券"),
+    (171,"金融：クレジット"),
+    (181,"金融：信販・リース"),
+    (191,"金融：その他金融"),
+    (201,"金融：生保・損保"),
+    (211,"サービス・インフラ：不動産"),
+    (221,"サービス・インフラ：鉄道・航空・運輸・物流"),
+    (231,"サービス・インフラ：電力・ガス・エネルギー"),
+    (241,"サービス・インフラ：フードサービス"),
+    (251,"サービス・インフラ：ホテル・旅行"),
+    (261,"サービス・インフラ：医療・福祉"),
+    (271,"サービス・インフラ：アミューズメント・レジャー"),
+    (281,"サービス・インフラ：その他サービス"),
+    (291,"サービス・インフラ：コンサルティング・調査"),
+    (301,"サービス・インフラ：人材サービス"),
+    (311,"サービス・インフラ：教育"),
+    (321,"ソフトウェア：ソフトウェア"),
+    (331,"ソフトウェア：インターネット"),
+    (341,"ソフトウェア：通信"),
+    (351,"広告・出版・マスコミ：放送"),
+    (361,"広告・出版・マスコミ：新聞"),
+    (371,"広告・出版・マスコミ：出版"),
+    (381,"広告・出版・マスコミ：広告"),
+    (391,"官公庁・公社・団体：公社・団体"),
+    (401,"官公庁・公社・団体：官公庁"),
+    (999,_("others"))
+)
+
+GRADES = [
+    (0, _("students")),
+    (1, _("new_graduates")),
+    (5, _("juniors")),
+    (10, _("regular_members")),
+    (15, _("team_leaders")),
+    (20, _("managers")),
+    (25, _("heads_of_section")),
+    (30, _("board_members"))
+]
