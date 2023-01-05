@@ -8,6 +8,8 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
   <title>{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}</title>
+  <meta property="og:title" content="{% if page_title %}{{page_title}} - {% endif %}{% trans 'site_title' %}">
+  <meta property="og:image" content="{% static 'img/og_image.png' %}">
 
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/86688b6ab0.js" crossorigin="anonymous"></script>
